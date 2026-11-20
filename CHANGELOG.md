@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 - 2026-11-20
+## 0.3.0 - 2026-11-20
 
 ### Features
 
@@ -8,7 +8,7 @@
 - Card: the illustration theme (`auto` / `day` / `night`) is in the visual editor
 - Card and panel: the status pill also says how many items are due soon (it said "All up to date" in amber)
 - Panel: option **Hide the top bar** (`hide_header`: no / for everyone / for non-admins), as on the other ha-* panels — the tabs stay, with the menu button and the round button beside them; in the options and the Settings tab
-- Consumables whose sensor is unavailable stay in the card and the panel, greyed out and last, instead of vanishing (never counted as overdue/soon, never reminded)
+- Consumables (tanks and liquids included) whose sensor is unavailable stay in the card and the panel, greyed out and last, instead of vanishing (never counted as overdue/soon, never reminded)
 
 ### Fixes
 
@@ -25,6 +25,18 @@
 - Version consistency also checks `const.py` and the panel's and the card's version constants
 - Browser layout check (no DOM rebuild, no height change on hass updates) in the Screenshots workflow
 - Tests for the panel's task validation, the reminder retry, the diagnostics and the dashboard resource; brand logos in the README
+
+## 0.2.0 - 2026-11-20
+
+### Features
+
+- Tanks and liquids: the problem binary sensors of a device's clean water tank, dirty water tank, cleaning fluid, detergent, softener and dust bin are tracked (overdue while they report a problem)
+- Dock strainer time left (Roborock), with its reset button
+
+### Fixes
+
+- Consumables are also found from the entity's translation key, and accents are dropped from the names: with Home Assistant in another language than English (entity IDs made from the translated names, such as `temps_restant_brosse_laterale`), the brushes, filter and sensors were not found, nor their reset buttons
+- The mop drying time left is no longer taken for a mop consumable
 
 ## 0.1.2 - 2026-11-20
 

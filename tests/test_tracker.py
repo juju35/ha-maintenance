@@ -357,3 +357,63 @@ async def test_hide_header_option(hass: HomeAssistant, tracker, hass_ws_client):
     assert (await client.receive_json())["result"]["options"]["hide_header"] == "all"
     await client.send_json_auto_id({"type": f"{DOMAIN}/save", "options": {"hide_header": "sometimes"}})
     assert not (await client.receive_json())["success"]
+
+
+async def test_translated_vacuum(hass: HomeAssistant, tracker):
+    """Home Assistant in French: entity IDs from the translated names, the translation keys stay English."""
+    other = MockConfigEntry(domain="test")
+    other.add_to_hass(hass)
+    saros = _device(hass, other, "Saros")
+    registry = er.async_get(hass)
+
+    def add(domain, object_id, key, state, attributes=None):
+        registry.async_get_or_create(
+            domain, "roborock", f"saros_{key}", suggested_object_id=object_id, device_id=saros,
+            config_entry=other, translation_key=key,
+        )  # fmt: skip
+        hass.states.async_set(f"{domain}.{object_id}", state, attributes or {})
+
+    hours = {"unit_of_measurement": "h", "device_class": "duration"}
+    problem = {"device_class": "problem"}
+    add("vacuum", "saros", None, "docked")
+    add("sensor", "saros_temps_restant_brosse_laterale", "side_brush_time_left", "185", hours)
+    add("sensor", "saros_temps_restant_filtre", "filter_time_left", "143", hours)
+    add("sensor", "saros_temps_restant_capteurs", "sensor_time_left", "15", hours)
+    add("sensor", "saros_dock_duree_restante_crepine", "strainer_time_left", "39", hours)
+    add(
+        "sensor",
+        "saros_dock_temps_de_sechage_restant",
+        "mop_drying_remaining_time",
+        "6600",
+        {"unit_of_measurement": "s"},
+    )
+    add("button", "saros_reinitialiser_le_consommable_de_la_brosse_laterale", "reset_side_brush_consumable", "unknown")
+    add("binary_sensor", "saros_dock_reservoir_d_eau_propre", "clean_box_empty", "off", problem)
+    add("binary_sensor", "saros_dock_reservoir_d_eau_sale", "dirty_box_full", "on", problem)
+    add("binary_sensor", "saros_dock_liquide_de_nettoyage", "clean_fluid_empty", "off", problem)
+    add("binary_sensor", "saros_reservoir_d_eau_fixe", "water_box_attached", "on", {"device_class": "connectivity"})
+    tracker.async_discover()
+    found = {f["entity_id"]: f for f in tracker.found()}
+    for entity_id in (
+        "sensor.saros_temps_restant_brosse_laterale",
+        "sensor.saros_temps_restant_filtre",
+        "sensor.saros_temps_restant_capteurs",
+        "sensor.saros_dock_duree_restante_crepine",
+        "binary_sensor.saros_dock_reservoir_d_eau_propre",
+        "binary_sensor.saros_dock_reservoir_d_eau_sale",
+        "binary_sensor.saros_dock_liquide_de_nettoyage",
+    ):
+        assert found[entity_id]["category"] == "vacuum", entity_id
+    assert "sensor.saros_dock_temps_de_sechage_restant" not in found
+    assert "binary_sensor.saros_reservoir_d_eau_fixe" not in found
+    side = found["sensor.saros_temps_restant_brosse_laterale"]
+    assert side["key"] == "side_brush"
+    assert side["reset"] == "button.saros_reinitialiser_le_consommable_de_la_brosse_laterale"
+    dirty = _item(tracker, "binary_sensor.saros_dock_reservoir_d_eau_sale")
+    assert (dirty["status"], dirty["state"]) == ("overdue", "problem")
+    clean = _item(tracker, "binary_sensor.saros_dock_reservoir_d_eau_propre")
+    assert (clean["status"], clean["state"]) == ("ok", "ok")
+    await tracker.async_done("binary_sensor.saros_dock_reservoir_d_eau_sale")
+    assert tracker.history[0]["item"] == "binary_sensor.saros_dock_reservoir_d_eau_sale"
+    hass.states.async_set("binary_sensor.saros_dock_reservoir_d_eau_propre", "unavailable", {"device_class": "problem"})
+    assert _item(tracker, "binary_sensor.saros_dock_reservoir_d_eau_propre")["status"] == "unavailable"
