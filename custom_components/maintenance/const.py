@@ -6,7 +6,7 @@ from typing import Final
 
 DOMAIN: Final = "maintenance"
 TITLE: Final = "Maintenance"
-VERSION: Final = "0.1.0"
+VERSION: Final = "0.1.1"
 
 # Status of an item, most urgent first.
 STATUS_OVERDUE: Final = "overdue"
@@ -45,7 +45,8 @@ ATTR_ICON: Final = "icon"
 
 EVENT_DONE: Final = f"{DOMAIN}_done"
 
-PANEL_URL: Final = "maintenance"
+# Not "maintenance": Home Assistant already serves a panel at that path.
+PANEL_URL: Final = "home-maintenance"
 PANEL_ICON: Final = "mdi:wrench-clock"
 
 STORAGE_VERSION: Final = 1

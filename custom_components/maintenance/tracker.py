@@ -46,6 +46,7 @@ from .const import (
     MAX_HISTORY,
     MAX_SAMPLES,
     MIN_SAMPLE_DAYS,
+    PANEL_URL,
     STATUS_OK,
     STATUS_OVERDUE,
     STATUS_SOON,
@@ -146,9 +147,13 @@ class MaintenanceTracker:
         if self.hass.state is CoreState.running:
             self.async_discover()
         else:
-            self._unsubs.append(
-                self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, lambda _e: self.async_discover())
-            )
+            # A @callback, so it runs in the event loop: a plain lambda is run in an executor thread, from where
+            # the entities' state writes are refused.
+            @callback
+            def _started(_event: Event) -> None:
+                self.async_discover()
+
+            self._unsubs.append(self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _started))
 
     async def async_unload(self) -> None:
         for unsub in self._unsubs:
@@ -513,7 +518,7 @@ class MaintenanceTracker:
         if domain == "notify_hub":
             payload |= {"priority": "info", "topic": "maintenance", "source": "Maintenance"}
         else:
-            payload["data"] = {"url": "/maintenance", "clickAction": "/maintenance", "tag": "maintenance"}
+            payload["data"] = {"url": f"/{PANEL_URL}", "clickAction": f"/{PANEL_URL}", "tag": "maintenance"}
         await self.hass.services.async_call(domain, name, payload, blocking=True)
         for item in fresh:
             notified[item["id"]] = item["status"]
