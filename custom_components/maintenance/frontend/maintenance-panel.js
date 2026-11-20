@@ -6,7 +6,7 @@
  * illustrated header across the whole width, the tabs under it, the current tab in the address.
  * https://github.com/juju35/ha-maintenance
  */
-var MAINTENANCE_PANEL_VERSION = '0.3.0';
+var MAINTENANCE_PANEL_VERSION = '0.4.0';
 
 var MT_PANEL_I18N = {
   en: { title: "Maintenance", tracked_n: "{n} tracked", overdue_n: "{n} overdue", all_good: "All up to date", next: "Next: {name}, {when}", attention: "Needs attention", done: "Done", overdue_days: "Overdue by {n} d", due_today: "Due today", in_days: "In {n} d", in_months: "In {n} months", left_pct: "{p} % left", left_hours: "≈ {n} h", left_days: "≈ {n} days", empty: "Empty", every_days: "every {n} d", every_weeks: "every {n} wk", every_months: "every {n} mo", manual: "Manual", nothing: "Nothing tracked yet", not_found: "Maintenance is not set up", card_name: "Maintenance Card", card_desc: "Filters, brushes, ink and chores: what is overdue, what comes next", ed_entity: "Sensor", ed_title: "Title", ed_rows: "Rows", ed_language: "Language", c_overdue: "Overdue", c_soon: "Soon", c_ok: "Up to date", c_done_month: "Done this month", cat_vacuum: "Vacuum", cat_purifier: "Air purifier", cat_printer: "Printer", cat_safety: "Safety", cat_home: "Home", cat_garden: "Garden", cat_vehicle: "Vehicle", cat_other: "Other", tab_due: "Due", tab_calendar: "Calendar", tab_history: "History", tab_settings: "Settings", subtitle: "{n} tracked · {a} found automatically · {b} manual tasks", soon_hint: "≤ {d} d or ≤ {p} %", f_all: "All", f_consumables: "Consumables", f_tasks: "Tasks", g_todo: "To do", g_ok: "Up to date", add_task: "Add a task", edit: "Edit", delete: "Delete", save: "Save", cancel: "Cancel", f_name: "Name", f_every: "Every", f_unit: "Unit", u_days: "days", u_weeks: "weeks", u_months: "months", f_category: "Category", f_last: "Last done", cal_next30: "Next 30 days", today: "Today", cal_list: "Coming up", no_due: "Nothing due in the next 30 days", h_empty: "Nothing done yet", h_by: "by {who}", s_thresholds: "When is it soon", s_soon_days: "Days before a due date", s_soon_percent: "Consumable low at (%)", s_reminders: "Reminders", s_time: "Daily reminder at", s_service: "Send through", s_none: "No reminder", remind_now: "Send the reminder now", s_found: "Consumables found", s_found_text: "Uncheck a sensor to stop tracking it.", saved: "Saved", sent: "Sent", error: "Error", soon_n: "{n} due soon", ed_illustration_theme: "Illustration", th_auto: "Automatic (theme)", th_day: "Day", th_night: "Night", f_icon: "Icon", unavailable: "Unavailable", s_panel: "Panel", settings_hide_header: "Hide the top bar", settings_hide_header_hint: "The illustrated header above the tabs; the tabs stay, and on a phone the menu button moves beside them.", hide_header_off: "No", hide_header_all: "For everyone", hide_header_non_admin: "For non-admins" },
@@ -327,14 +327,30 @@ class MaintenancePanel extends HTMLElement {
 
   _row(item, t, todo) {
     var tone = MTP_TONE[item.status] || 'ok';
-    var tag = item.kind === 'task' ? t.manual : item.source || '—';
+    var tag = item.kind === 'task' ? t.manual : item.device || item.source || '—';
     var actions = [
       item.kind === 'task' ? `<button class="btn ghost" type="button" data-act="edit" data-item="${mtpEsc(item.id)}">${mtpEsc(t.edit)}</button>` : '',
       todo ? `<button class="btn" type="button" data-act="done" data-item="${mtpEsc(item.id)}">${mtpEsc(t.done)}</button>` : '',
     ].join('');
     return `<div class="row r-${tone}" data-key="${mtpEsc(item.id)}"><span class="dot"><ha-icon icon="${mtpEsc(item.icon || 'mdi:wrench')}"></ha-icon></span>
-      <span class="txt"><span class="nm">${mtpEsc(item.name)}</span><span class="sub">${mtpEsc(this._line(item, t))}</span></span>
-      <span class="tag">${mtpEsc(tag)}</span><span class="acts">${actions}</span></div>`;
+      <span class="txt"><span class="nm">${mtpEsc(item.short || item.name)}</span><span class="sub">${mtpEsc(this._line(item, t))}</span></span>
+      <span class="tag" title="${mtpEsc(item.source || '')}">${mtpEsc(tag)}</span><span class="acts">${actions}</span></div>`;
+  }
+
+  // What is up to date, by device (the manual tasks together): a card each, a compact line and a gauge per item.
+  _devices(list, t) {
+    var groups = new Map();
+    for (var i of list) {
+      var key = i.kind === 'task' ? '\u0000tasks' : i.device || `\u0000${i.source || 'other'}`;
+      if (!groups.has(key)) groups.set(key, { key, name: i.kind === 'task' ? t.f_tasks : i.device || i.source || t.cat_other, tag: i.kind === 'task' ? '' : i.source, items: [] });
+      groups.get(key).items.push(i);
+    }
+    var gauge = (i) => (i.percent != null ? `<span class="gauge"><span style="width:${Math.max(2, Math.min(100, i.percent))}%"></span></span>` : '');
+    var line = (i) => `<div class="cline" data-key="${mtpEsc(i.id)}"><span class="dot"><ha-icon icon="${mtpEsc(i.icon || 'mdi:wrench')}"></ha-icon></span>
+      <span class="txt"><span class="nm">${mtpEsc(i.short || i.name)}</span><span class="sub">${mtpEsc(this._line(i, t))}</span>${gauge(i)}</span>
+      ${i.kind === 'task' ? `<span class="acts"><button class="btn ghost" type="button" data-act="edit" data-item="${mtpEsc(i.id)}">${mtpEsc(t.edit)}</button></span>` : ''}</div>`;
+    return `<div class="dgrid">${[...groups.values()].map((g) => `<section class="dcard" data-key="dev-${mtpEsc(g.key)}"><div class="dhead"><span class="gname">${mtpEsc(g.name)}</span>
+      ${g.tag && g.tag !== g.name ? `<span class="tag">${mtpEsc(g.tag)}</span>` : ''}<span class="grow"></span><span class="gcount">${g.items.length}</span></div>${g.items.map(line).join('')}</section>`).join('')}</div>`;
   }
 
   _due(d, t) {
@@ -359,7 +375,7 @@ class MaintenancePanel extends HTMLElement {
     var group = (title, list, isTodo) => (list.length ? `<h2>${mtpEsc(title)}</h2><div class="list">${list.map((i) => this._row(i, t, isTodo)).join('')}</div>` : '');
     return `<div class="tiles">${tiles.map(([n, k, cls]) => `<div class="tile${cls ? ` t-${cls}` : ''}"><span class="n">${mtpEsc(n ?? 0)}</span><span class="k">${mtpEsc(k)}</span></div>`).join('')}</div>
       <div class="chips">${filters.map((f) => `<button type="button" class="chip${f === this._filter ? ' on' : ''}" data-act="filter" data-filter="${f}">${mtpEsc(label(f))}</button>`).join('')}</div>
-      ${items.length ? group(t.g_todo, todo, true) + group(t.g_ok, fine, false) + group(t.unavailable, gone, false) : `<div class="empty">${mtpEsc(t.nothing)}</div>`}`;
+      ${items.length ? group(t.g_todo, todo, true) + (fine.length ? `<h2>${mtpEsc(t.g_ok)}</h2>${this._devices(fine, t)}` : '') + group(t.unavailable, gone, false) : `<div class="empty">${mtpEsc(t.nothing)}</div>`}`;
   }
 
   _editor(t) {
@@ -506,6 +522,16 @@ class MaintenancePanel extends HTMLElement {
       .chip { font: inherit; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 999px; cursor: pointer; color: var(--primary-text-color);
               border: 1px solid var(--divider-color, rgba(127,127,127,.35)); background: var(--card-background-color, #fff); }
       .chip.on { color: #0f766e; border-color: #5eead4; background: #ccfbf1; } .night .chip.on { color: #99f6e4; background: #134e4a; border-color: #2c6b66; }
+      .dgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; align-items: start; }
+      .dcard { background: var(--card-background-color, #fff); border-radius: 14px; box-shadow: var(--ha-card-box-shadow, 0 1px 3px rgba(0,0,0,.08)); overflow: hidden; }
+      .dhead { display: flex; align-items: center; gap: 8px; padding: 10px 14px; font-size: 14px; font-weight: 700; border-bottom: 1px solid var(--divider-color, rgba(127,127,127,.18)); }
+      .gname { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .dhead .grow { flex: 1; }
+      .gcount { font-size: 12px; font-weight: 600; color: var(--secondary-text-color); font-variant-numeric: tabular-nums; }
+      .cline { --c: var(--ok); display: flex; align-items: center; gap: 12px; padding: 8px 14px; }
+      .cline + .cline { border-top: 1px solid var(--divider-color, rgba(127,127,127,.12)); }
+      .cline .dot { width: 30px; height: 30px; --mdc-icon-size: 16px; } .cline .sub { color: var(--secondary-text-color); } .cline .acts { min-width: 0; }
+      .gauge { display: block; height: 4px; border-radius: 2px; margin-top: 5px; background: color-mix(in srgb, var(--c) 18%, transparent); overflow: hidden; }
+      .gauge > span { display: block; height: 100%; border-radius: 2px; background: var(--c); }
       .list { display: flex; flex-direction: column; gap: 6px; }
       .row { --c: var(--ok); display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 14px;
              background: var(--card-background-color, #fff); box-shadow: var(--ha-card-box-shadow, 0 1px 3px rgba(0,0,0,.06)); }

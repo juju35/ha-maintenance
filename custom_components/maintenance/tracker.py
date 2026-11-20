@@ -146,6 +146,15 @@ def _words(*parts: str | None) -> str:
     return "_" + "_".join(_WORD.sub("_", p.lower()).strip("_") for p in plain) + "_"
 
 
+def _short(name: str, device: str | None) -> str:
+    """The name without its device's name in front (« Roborock Saros 20 Filter » on the Saros 20 is « Filter »)."""
+    if device and name.lower().startswith(device.lower()) and len(name) > len(device):
+        rest = name[len(device) :].strip(" -·:")
+        if rest:
+            return rest[0].upper() + rest[1:]
+    return name
+
+
 class MaintenanceTracker:
     """Everything the entities, the panel and the card show."""
 
@@ -493,6 +502,8 @@ class MaintenanceTracker:
             "id": entity_id,
             "kind": KIND_CONSUMABLE,
             "name": name,
+            "short": _short(name, info["device"]),
+            "device": info["device"],
             "category": info["category"],
             "icon": info["icon"],
             "source": info["source"],
@@ -516,7 +527,8 @@ class MaintenanceTracker:
             "name": _SUFFIX.sub("", state.name if state else entity_id).strip(), "source": info["source"],
             "entity_id": entity_id, "unit": info.get("unit"), "value": None, "hours": None, "percent": None,
             "days_left": None, "due": None, "status": STATUS_UNAVAILABLE, "can_reset": info.get("reset") is not None,
-            "ignored": info["ignored"],
+            "ignored": info["ignored"], "device": info.get("device"),
+            "short": _short(_SUFFIX.sub("", state.name if state else entity_id).strip(), info.get("device")),
         }  # fmt: skip
 
     def _status_item(self, entity_id: str, info: dict[str, Any]) -> dict[str, Any] | None:
@@ -529,6 +541,8 @@ class MaintenanceTracker:
             "id": entity_id,
             "kind": KIND_CONSUMABLE,
             "name": state.name,
+            "short": _short(state.name, info["device"]),
+            "device": info["device"],
             "category": info["category"],
             "icon": info["icon"],
             "source": info["source"],

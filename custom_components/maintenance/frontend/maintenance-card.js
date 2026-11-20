@@ -6,7 +6,7 @@
  * resources by the integration.
  * https://github.com/juju35/ha-maintenance
  */
-var MAINTENANCE_CARD_VERSION = '0.3.0';
+var MAINTENANCE_CARD_VERSION = '0.4.0';
 
 var MT_CARD_I18N = {
   en: { title: "Maintenance", tracked_n: "{n} tracked", overdue_n: "{n} overdue", all_good: "All up to date", next: "Next: {name}, {when}", attention: "Needs attention", done: "Done", overdue_days: "Overdue by {n} d", due_today: "Due today", in_days: "In {n} d", in_months: "In {n} months", left_pct: "{p} % left", left_hours: "≈ {n} h", left_days: "≈ {n} days", empty: "Empty", every_days: "every {n} d", every_weeks: "every {n} wk", every_months: "every {n} mo", manual: "Manual", nothing: "Nothing tracked yet", not_found: "Maintenance is not set up", card_name: "Maintenance Card", card_desc: "Filters, brushes, ink and chores: what is overdue, what comes next", ed_entity: "Sensor", ed_title: "Title", ed_rows: "Rows", ed_language: "Language", soon_n: "{n} due soon", ed_illustration_theme: "Illustration", th_auto: "Automatic (theme)", th_day: "Day", th_night: "Night", unavailable: "Unavailable" },
