@@ -147,9 +147,13 @@ class MaintenanceTracker:
         if self.hass.state is CoreState.running:
             self.async_discover()
         else:
-            self._unsubs.append(
-                self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, lambda _e: self.async_discover())
-            )
+            # A @callback, so it runs in the event loop: a plain lambda is run in an executor thread, from where
+            # the entities' state writes are refused.
+            @callback
+            def _started(_event: Event) -> None:
+                self.async_discover()
+
+            self._unsubs.append(self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _started))
 
     async def async_unload(self) -> None:
         for unsub in self._unsubs:
