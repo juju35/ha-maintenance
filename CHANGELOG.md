@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0 - 2026-11-20
+
+### Features
+
+- Tanks and liquids: the problem binary sensors of a device's clean water tank, dirty water tank, cleaning fluid, detergent, softener and dust bin are tracked (overdue while they report a problem)
+- Dock strainer time left (Roborock), with its reset button
+
+### Fixes
+
+- Consumables are also found from the entity's translation key, and accents are dropped from the names: with Home Assistant in another language than English (entity IDs made from the translated names, such as `temps_restant_brosse_laterale`), the brushes, filter and sensors were not found, nor their reset buttons
+- The mop drying time left is no longer taken for a mop consumable
+
 ## 0.1.2 - 2026-11-20
 
 ### Fixes
