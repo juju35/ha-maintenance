@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Maintenance",
+        "description": "Track the consumables of your devices (filters, brushes, ink…) and your recurring chores. Nothing to fill in: the consumables are found by themselves, and the tasks are added from the Maintenance panel."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Maintenance",
+        "data": {
+          "soon_days": "Due soon within",
+          "soon_percent": "Consumable low at",
+          "reminder_time": "Daily reminder at",
+          "notify_service": "Reminder action"
+        },
+        "data_description": {
+          "soon_days": "A task (or a consumable at its current pace) due within this many days counts as soon.",
+          "soon_percent": "A consumable at or below this percentage counts as soon.",
+          "reminder_time": "Once a day, what became overdue or soon is sent, each item once.",
+          "notify_service": "For example notify.mobile_app_phone or notify_hub.send; leave empty for no reminder."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Overdue"
+      },
+      "soon": {
+        "name": "Due soon"
+      },
+      "tracked": {
+        "name": "Tracked"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Due dates"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Mark as done",
+      "description": "A task done today, or a consumable replaced: the device's reset button is pressed when it has one.",
+      "fields": {
+        "item": {
+          "name": "Item",
+          "description": "A consumable's sensor (sensor.…) or a task (task:…), as shown in the panel."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Add a task",
+      "description": "A manual task repeated every N days, weeks or months.",
+      "fields": {
+        "name": {
+          "name": "Name",
+          "description": "What to do."
+        },
+        "every": {
+          "name": "Every",
+          "description": "How many days, weeks or months between two times."
+        },
+        "unit": {
+          "name": "Unit",
+          "description": "Days, weeks or months."
+        },
+        "last_done": {
+          "name": "Last done",
+          "description": "Today when left out."
+        },
+        "category": {
+          "name": "Category",
+          "description": "Groups the task in the panel."
+        },
+        "icon": {
+          "name": "Icon",
+          "description": "Shown next to the task."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Remove a task",
+      "description": "Deletes a manual task and its reminders.",
+      "fields": {
+        "item": {
+          "name": "Task",
+          "description": "The task (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Days",
+        "weeks": "Weeks",
+        "months": "Months"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Vacuum",
+        "purifier": "Air purifier",
+        "printer": "Printer",
+        "safety": "Safety",
+        "home": "Home",
+        "garden": "Garden",
+        "vehicle": "Vehicle",
+        "other": "Other"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance is not set up."
+    },
+    "unknown_item": {
+      "message": "Unknown item: {item}."
+    }
+  }
+}

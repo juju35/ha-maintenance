@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Onderhoud",
+        "description": "Volg de verbruiksartikelen van je apparaten (filters, borstels, inkt…) en je terugkerende klusjes. Niets in te vullen: verbruiksartikelen worden vanzelf gevonden en taken voeg je toe in het Maintenance-paneel."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance is al ingesteld."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Onderhoud",
+        "data": {
+          "soon_days": "Binnenkort binnen",
+          "soon_percent": "Verbruiksartikel laag bij",
+          "reminder_time": "Dagelijkse herinnering om",
+          "notify_service": "Herinneringsactie"
+        },
+        "data_description": {
+          "soon_days": "Een taak (of een verbruiksartikel in het huidige tempo) die binnen zoveel dagen vervalt, telt als binnenkort.",
+          "soon_percent": "Een verbruiksartikel op of onder dit percentage telt als binnenkort.",
+          "reminder_time": "Eén keer per dag wordt verstuurd wat te laat of binnenkort werd, elk item één keer.",
+          "notify_service": "Bijvoorbeeld notify.mobile_app_phone of notify_hub.send; leeg voor geen herinnering."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Te laat"
+      },
+      "soon": {
+        "name": "Binnenkort"
+      },
+      "tracked": {
+        "name": "Gevolgd"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Vervaldata"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Markeren als gedaan",
+      "description": "Een taak vandaag gedaan of een verbruiksartikel vervangen: de resetknop van het apparaat wordt ingedrukt als die er is.",
+      "fields": {
+        "item": {
+          "name": "Item",
+          "description": "De sensor van een verbruiksartikel (sensor.…) of een taak (task:…), zoals in het paneel."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Taak toevoegen",
+      "description": "Een handmatige taak, elke N dagen, weken of maanden herhaald.",
+      "fields": {
+        "name": {
+          "name": "Naam",
+          "description": "Wat er moet gebeuren."
+        },
+        "every": {
+          "name": "Elke",
+          "description": "Hoeveel dagen, weken of maanden tussen twee keer."
+        },
+        "unit": {
+          "name": "Eenheid",
+          "description": "Dagen, weken of maanden."
+        },
+        "last_done": {
+          "name": "Laatst gedaan",
+          "description": "Vandaag als leeg."
+        },
+        "category": {
+          "name": "Categorie",
+          "description": "Groepeert de taak in het paneel."
+        },
+        "icon": {
+          "name": "Pictogram",
+          "description": "Getoond naast de taak."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Taak verwijderen",
+      "description": "Verwijdert een handmatige taak en haar herinneringen.",
+      "fields": {
+        "item": {
+          "name": "Taak",
+          "description": "De taak (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Dagen",
+        "weeks": "Weken",
+        "months": "Maanden"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Stofzuiger",
+        "purifier": "Luchtreiniger",
+        "printer": "Printer",
+        "safety": "Veiligheid",
+        "home": "Huis",
+        "garden": "Tuin",
+        "vehicle": "Voertuig",
+        "other": "Overig"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance is niet ingesteld."
+    },
+    "unknown_item": {
+      "message": "Onbekend item: {item}."
+    }
+  }
+}

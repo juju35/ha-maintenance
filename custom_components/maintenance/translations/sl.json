@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Vzdrževanje",
+        "description": "Spremljajte potrošni material naprav (filtri, krtače, črnilo…) in ponavljajoča se opravila. Nič za izpolniti: potrošni material se najde sam, opravila pa dodate v plošči Maintenance."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance je že nastavljen."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Vzdrževanje",
+        "data": {
+          "soon_days": "Kmalu v",
+          "soon_percent": "Potrošni material nizek pri",
+          "reminder_time": "Dnevni opomnik ob",
+          "notify_service": "Dejanje opomnika"
+        },
+        "data_description": {
+          "soon_days": "Opravilo (ali potrošni material pri trenutnem tempu) z rokom v toliko dneh šteje kot kmalu.",
+          "soon_percent": "Potrošni material na tem odstotku ali pod njim šteje kot kmalu.",
+          "reminder_time": "Enkrat na dan se pošlje, kar zamuja ali je kmalu, vsak element enkrat.",
+          "notify_service": "Na primer notify.mobile_app_phone ali notify_hub.send; prazno za brez opomnika."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Zamuja"
+      },
+      "soon": {
+        "name": "Kmalu"
+      },
+      "tracked": {
+        "name": "Spremljano"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Roki"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Označi kot opravljeno",
+      "description": "Opravilo, opravljeno danes, ali zamenjan potrošni material: pritisne se gumb za ponastavitev naprave, če ga ima.",
+      "fields": {
+        "item": {
+          "name": "Element",
+          "description": "Senzor potrošnega materiala (sensor.…) ali opravilo (task:…), kot v plošči."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Dodaj opravilo",
+      "description": "Ročno opravilo, ponovljeno vsakih N dni, tednov ali mesecev.",
+      "fields": {
+        "name": {
+          "name": "Ime",
+          "description": "Kaj je treba narediti."
+        },
+        "every": {
+          "name": "Vsakih",
+          "description": "Koliko dni, tednov ali mesecev med dvema krat."
+        },
+        "unit": {
+          "name": "Enota",
+          "description": "Dnevi, tedni ali meseci."
+        },
+        "last_done": {
+          "name": "Nazadnje opravljeno",
+          "description": "Danes, če je prazno."
+        },
+        "category": {
+          "name": "Kategorija",
+          "description": "Združi opravilo v plošči."
+        },
+        "icon": {
+          "name": "Ikona",
+          "description": "Prikazana ob opravilu."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Odstrani opravilo",
+      "description": "Izbriše ročno opravilo in njegove opomnike.",
+      "fields": {
+        "item": {
+          "name": "Opravilo",
+          "description": "Opravilo (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Dnevi",
+        "weeks": "Tedni",
+        "months": "Meseci"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Sesalnik",
+        "purifier": "Čistilnik zraka",
+        "printer": "Tiskalnik",
+        "safety": "Varnost",
+        "home": "Dom",
+        "garden": "Vrt",
+        "vehicle": "Vozilo",
+        "other": "Drugo"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance ni nastavljen."
+    },
+    "unknown_item": {
+      "message": "Neznan element: {item}."
+    }
+  }
+}

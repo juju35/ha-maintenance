@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Underhåll",
+        "description": "Följ dina enheters förbrukningsmaterial (filter, borstar, bläck…) och återkommande sysslor. Inget att fylla i: förbrukningsmaterialen hittas av sig själva och uppgifterna läggs till i Maintenance-panelen."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance är redan konfigurerat."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Underhåll",
+        "data": {
+          "soon_days": "Snart inom",
+          "soon_percent": "Förbrukningsmaterial lågt vid",
+          "reminder_time": "Daglig påminnelse kl.",
+          "notify_service": "Påminnelseåtgärd"
+        },
+        "data_description": {
+          "soon_days": "En uppgift (eller ett förbrukningsmaterial i nuvarande takt) som förfaller inom så många dagar räknas som snart.",
+          "soon_percent": "Ett förbrukningsmaterial på eller under denna procent räknas som snart.",
+          "reminder_time": "En gång om dagen skickas det som blivit försenat eller snart, varje objekt en gång.",
+          "notify_service": "Till exempel notify.mobile_app_phone eller notify_hub.send; tomt för ingen påminnelse."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Försenade"
+      },
+      "soon": {
+        "name": "Snart"
+      },
+      "tracked": {
+        "name": "Följda"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Förfallodatum"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Markera som klar",
+      "description": "En uppgift gjord i dag eller ett förbrukningsmaterial bytt: enhetens återställningsknapp trycks om den har en.",
+      "fields": {
+        "item": {
+          "name": "Objekt",
+          "description": "Ett förbrukningsmaterials sensor (sensor.…) eller en uppgift (task:…), som i panelen."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Lägg till en uppgift",
+      "description": "En manuell uppgift som upprepas var N:e dag, vecka eller månad.",
+      "fields": {
+        "name": {
+          "name": "Namn",
+          "description": "Vad som ska göras."
+        },
+        "every": {
+          "name": "Var",
+          "description": "Hur många dagar, veckor eller månader mellan två gånger."
+        },
+        "unit": {
+          "name": "Enhet",
+          "description": "Dagar, veckor eller månader."
+        },
+        "last_done": {
+          "name": "Senast gjord",
+          "description": "I dag om tomt."
+        },
+        "category": {
+          "name": "Kategori",
+          "description": "Grupperar uppgiften i panelen."
+        },
+        "icon": {
+          "name": "Ikon",
+          "description": "Visas bredvid uppgiften."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Ta bort en uppgift",
+      "description": "Tar bort en manuell uppgift och dess påminnelser.",
+      "fields": {
+        "item": {
+          "name": "Uppgift",
+          "description": "Uppgiften (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Dagar",
+        "weeks": "Veckor",
+        "months": "Månader"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Dammsugare",
+        "purifier": "Luftrenare",
+        "printer": "Skrivare",
+        "safety": "Säkerhet",
+        "home": "Hem",
+        "garden": "Trädgård",
+        "vehicle": "Fordon",
+        "other": "Övrigt"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance är inte konfigurerat."
+    },
+    "unknown_item": {
+      "message": "Okänt objekt: {item}."
+    }
+  }
+}

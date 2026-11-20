@@ -1,0 +1,17 @@
+{
+  "entity": {
+    "sensor": {
+      "overdue": { "default": "mdi:wrench-clock" },
+      "soon": { "default": "mdi:calendar-clock" },
+      "tracked": { "default": "mdi:format-list-checks" }
+    },
+    "calendar": {
+      "due": { "default": "mdi:calendar-check" }
+    }
+  },
+  "services": {
+    "done": { "service": "mdi:check-circle-outline" },
+    "add_task": { "service": "mdi:plus-circle-outline" },
+    "remove_task": { "service": "mdi:minus-circle-outline" }
+  }
+}

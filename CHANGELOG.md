@@ -1,0 +1,17 @@
+# Changelog
+
+## 0.1.0 - 2026-11-20
+
+### Features
+
+- Consumables found among the device sensors (filters, brushes, mops, ink, toner…), with their days left estimated from a daily sample
+- Done presses the device's own reset button when it has one, and keeps a history
+- Manual tasks every N days, weeks or months, in categories
+- Overdue / soon / up to date statuses with configurable thresholds
+- Daily reminder through any notify action or Notify Hub, each item once
+- Calendar entity with the due dates
+- `maintenance.done`, `maintenance.add_task`, `maintenance.remove_task` actions, `maintenance_done` event
+- Sensors: overdue, due soon, tracked
+- Sidebar panel (due, calendar, history, settings) with a badge while something is overdue
+- Lovelace card with an animated illustrated header and the Done button
+- 22 languages

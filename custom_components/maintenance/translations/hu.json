@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Karbantartás",
+        "description": "Kövesse eszközei fogyóeszközeit (szűrők, kefék, tinta…) és ismétlődő teendőit. Nincs mit kitölteni: a fogyóeszközök maguktól előkerülnek, a feladatokat a Maintenance panelen adhatja hozzá."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "A Maintenance már be van állítva."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Karbantartás",
+        "data": {
+          "soon_days": "Hamarosan ennyin belül",
+          "soon_percent": "Fogyóeszköz alacsony ennél",
+          "reminder_time": "Napi emlékeztető ekkor",
+          "notify_service": "Emlékeztető művelet"
+        },
+        "data_description": {
+          "soon_days": "Az ennyi napon belül esedékes feladat (vagy fogyóeszköz a jelenlegi ütemben) hamarosannak számít.",
+          "soon_percent": "Az ezen a százalékon vagy alatta lévő fogyóeszköz hamarosannak számít.",
+          "reminder_time": "Naponta egyszer elküldi, ami késésbe került vagy hamarosan esedékes, minden elemet egyszer.",
+          "notify_service": "Például notify.mobile_app_phone vagy notify_hub.send; üresen nincs emlékeztető."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Késésben"
+      },
+      "soon": {
+        "name": "Hamarosan"
+      },
+      "tracked": {
+        "name": "Követett"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Határidők"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Megjelölés elvégzettként",
+      "description": "Ma elvégzett feladat vagy kicserélt fogyóeszköz: az eszköz visszaállító gombja megnyomásra kerül, ha van.",
+      "fields": {
+        "item": {
+          "name": "Elem",
+          "description": "Egy fogyóeszköz érzékelője (sensor.…) vagy egy feladat (task:…), ahogy a panelen."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Feladat hozzáadása",
+      "description": "N naponta, hetente vagy havonta ismétlődő kézi feladat.",
+      "fields": {
+        "name": {
+          "name": "Név",
+          "description": "Mit kell tenni."
+        },
+        "every": {
+          "name": "Minden",
+          "description": "Hány nap, hét vagy hónap két alkalom között."
+        },
+        "unit": {
+          "name": "Egység",
+          "description": "Nap, hét vagy hónap."
+        },
+        "last_done": {
+          "name": "Utoljára elvégezve",
+          "description": "Ma, ha üres."
+        },
+        "category": {
+          "name": "Kategória",
+          "description": "Csoportosítja a feladatot a panelen."
+        },
+        "icon": {
+          "name": "Ikon",
+          "description": "A feladat mellett jelenik meg."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Feladat eltávolítása",
+      "description": "Töröl egy kézi feladatot és emlékeztetőit.",
+      "fields": {
+        "item": {
+          "name": "Feladat",
+          "description": "A feladat (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Nap",
+        "weeks": "Hét",
+        "months": "Hónap"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Porszívó",
+        "purifier": "Légtisztító",
+        "printer": "Nyomtató",
+        "safety": "Biztonság",
+        "home": "Otthon",
+        "garden": "Kert",
+        "vehicle": "Jármű",
+        "other": "Egyéb"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "A Maintenance nincs beállítva."
+    },
+    "unknown_item": {
+      "message": "Ismeretlen elem: {item}."
+    }
+  }
+}

@@ -1,0 +1,58 @@
+done:
+  fields:
+    item:
+      required: true
+      example: "sensor.vacuum_filter_time_left"
+      selector:
+        text:
+add_task:
+  fields:
+    name:
+      required: true
+      example: "Descale the water heater"
+      selector:
+        text:
+    every:
+      required: true
+      example: 12
+      selector:
+        number:
+          min: 1
+          max: 999
+          mode: box
+    unit:
+      default: months
+      selector:
+        select:
+          translation_key: unit
+          options:
+            - days
+            - weeks
+            - months
+    last_done:
+      selector:
+        date:
+    category:
+      default: home
+      selector:
+        select:
+          translation_key: category
+          options:
+            - vacuum
+            - purifier
+            - printer
+            - safety
+            - home
+            - garden
+            - vehicle
+            - other
+    icon:
+      selector:
+        icon:
+remove_task:
+  fields:
+    item:
+      required: true
+      example: "task:4f2a9c1b7e"
+      selector:
+        text:

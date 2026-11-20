@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Manutenção",
+        "description": "Acompanhe os consumíveis dos seus dispositivos (filtros, escovas, tinta…) e as tarefas recorrentes. Nada a preencher: os consumíveis são encontrados sozinhos e as tarefas adicionam-se no painel Maintenance."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "O Maintenance já está configurado."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Manutenção",
+        "data": {
+          "soon_days": "Em breve dentro de",
+          "soon_percent": "Consumível baixo a",
+          "reminder_time": "Lembrete diário às",
+          "notify_service": "Ação de lembrete"
+        },
+        "data_description": {
+          "soon_days": "Uma tarefa (ou um consumível ao ritmo atual) que vence dentro destes dias conta como em breve.",
+          "soon_percent": "Um consumível nesta percentagem ou abaixo conta como em breve.",
+          "reminder_time": "Uma vez por dia é enviado o que ficou em atraso ou em breve, cada item uma vez.",
+          "notify_service": "Por exemplo notify.mobile_app_phone ou notify_hub.send; vazio para nenhum lembrete."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Em atraso"
+      },
+      "soon": {
+        "name": "Em breve"
+      },
+      "tracked": {
+        "name": "Acompanhados"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Prazos"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Marcar como feito",
+      "description": "Uma tarefa feita hoje ou um consumível substituído: o botão de reposição do dispositivo é premido, se existir.",
+      "fields": {
+        "item": {
+          "name": "Item",
+          "description": "O sensor de um consumível (sensor.…) ou uma tarefa (task:…), como no painel."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Adicionar uma tarefa",
+      "description": "Uma tarefa manual repetida a cada N dias, semanas ou meses.",
+      "fields": {
+        "name": {
+          "name": "Nome",
+          "description": "O que fazer."
+        },
+        "every": {
+          "name": "A cada",
+          "description": "Quantos dias, semanas ou meses entre duas vezes."
+        },
+        "unit": {
+          "name": "Unidade",
+          "description": "Dias, semanas ou meses."
+        },
+        "last_done": {
+          "name": "Última vez",
+          "description": "Hoje se vazio."
+        },
+        "category": {
+          "name": "Categoria",
+          "description": "Agrupa a tarefa no painel."
+        },
+        "icon": {
+          "name": "Ícone",
+          "description": "Mostrado ao lado da tarefa."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Remover uma tarefa",
+      "description": "Elimina uma tarefa manual e os seus lembretes.",
+      "fields": {
+        "item": {
+          "name": "Tarefa",
+          "description": "A tarefa (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Dias",
+        "weeks": "Semanas",
+        "months": "Meses"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Aspirador",
+        "purifier": "Purificador de ar",
+        "printer": "Impressora",
+        "safety": "Segurança",
+        "home": "Casa",
+        "garden": "Jardim",
+        "vehicle": "Veículo",
+        "other": "Outro"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "O Maintenance não está configurado."
+    },
+    "unknown_item": {
+      "message": "Item desconhecido: {item}."
+    }
+  }
+}

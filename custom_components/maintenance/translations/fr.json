@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Entretien",
+        "description": "Suivez les consommables de vos appareils (filtres, brosses, encre…) et vos tâches récurrentes. Rien à remplir : les consommables sont trouvés tout seuls, et les tâches s'ajoutent depuis le panneau Maintenance."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance est déjà configurée."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Entretien",
+        "data": {
+          "soon_days": "Bientôt dans les",
+          "soon_percent": "Consommable bas à",
+          "reminder_time": "Rappel quotidien à",
+          "notify_service": "Action de rappel"
+        },
+        "data_description": {
+          "soon_days": "Une tâche (ou un consommable à son rythme actuel) due dans ce nombre de jours compte comme bientôt.",
+          "soon_percent": "Un consommable à ce pourcentage ou en dessous compte comme bientôt.",
+          "reminder_time": "Une fois par jour, ce qui est passé en retard ou bientôt est envoyé, une seule fois par élément.",
+          "notify_service": "Par exemple notify.mobile_app_phone ou notify_hub.send ; vide pour aucun rappel."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "En retard"
+      },
+      "soon": {
+        "name": "Bientôt"
+      },
+      "tracked": {
+        "name": "Suivis"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Échéances"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Marquer comme fait",
+      "description": "Une tâche faite aujourd'hui, ou un consommable remplacé : le bouton de remise à zéro de l'appareil est pressé s'il en a un.",
+      "fields": {
+        "item": {
+          "name": "Élément",
+          "description": "Le capteur d'un consommable (sensor.…) ou une tâche (task:…), comme dans le panneau."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Ajouter une tâche",
+      "description": "Une tâche manuelle répétée tous les N jours, semaines ou mois.",
+      "fields": {
+        "name": {
+          "name": "Nom",
+          "description": "Ce qu'il faut faire."
+        },
+        "every": {
+          "name": "Tous les",
+          "description": "Nombre de jours, semaines ou mois entre deux fois."
+        },
+        "unit": {
+          "name": "Unité",
+          "description": "Jours, semaines ou mois."
+        },
+        "last_done": {
+          "name": "Dernière fois",
+          "description": "Aujourd'hui si vide."
+        },
+        "category": {
+          "name": "Catégorie",
+          "description": "Regroupe la tâche dans le panneau."
+        },
+        "icon": {
+          "name": "Icône",
+          "description": "Affichée à côté de la tâche."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Supprimer une tâche",
+      "description": "Supprime une tâche manuelle et ses rappels.",
+      "fields": {
+        "item": {
+          "name": "Tâche",
+          "description": "La tâche (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Jours",
+        "weeks": "Semaines",
+        "months": "Mois"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Aspirateur",
+        "purifier": "Purificateur d'air",
+        "printer": "Imprimante",
+        "safety": "Sécurité",
+        "home": "Maison",
+        "garden": "Jardin",
+        "vehicle": "Véhicule",
+        "other": "Autre"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance n'est pas configurée."
+    },
+    "unknown_item": {
+      "message": "Élément inconnu : {item}."
+    }
+  }
+}

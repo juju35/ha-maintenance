@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Konserwacja",
+        "description": "Śledź materiały eksploatacyjne urządzeń (filtry, szczotki, tusz…) i powtarzające się prace. Nic do wypełnienia: materiały są wykrywane same, a zadania dodaje się w panelu Maintenance."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance jest już skonfigurowane."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Konserwacja",
+        "data": {
+          "soon_days": "Wkrótce w ciągu",
+          "soon_percent": "Niski poziom materiału przy",
+          "reminder_time": "Codzienne przypomnienie o",
+          "notify_service": "Akcja przypomnienia"
+        },
+        "data_description": {
+          "soon_days": "Zadanie (lub materiał w obecnym tempie) z terminem w ciągu tylu dni liczy się jako wkrótce.",
+          "soon_percent": "Materiał na tym poziomie procentowym lub niżej liczy się jako wkrótce.",
+          "reminder_time": "Raz dziennie wysyłane jest to, co stało się zaległe lub bliskie, każdy element raz.",
+          "notify_service": "Na przykład notify.mobile_app_phone lub notify_hub.send; puste, aby nie przypominać."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Zaległe"
+      },
+      "soon": {
+        "name": "Wkrótce"
+      },
+      "tracked": {
+        "name": "Śledzone"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Terminy"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Oznacz jako zrobione",
+      "description": "Zadanie wykonane dziś lub wymieniony materiał: przycisk resetu urządzenia zostaje naciśnięty, jeśli istnieje.",
+      "fields": {
+        "item": {
+          "name": "Element",
+          "description": "Czujnik materiału (sensor.…) lub zadanie (task:…), jak w panelu."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Dodaj zadanie",
+      "description": "Zadanie ręczne powtarzane co N dni, tygodni lub miesięcy.",
+      "fields": {
+        "name": {
+          "name": "Nazwa",
+          "description": "Co zrobić."
+        },
+        "every": {
+          "name": "Co",
+          "description": "Ile dni, tygodni lub miesięcy między dwoma razami."
+        },
+        "unit": {
+          "name": "Jednostka",
+          "description": "Dni, tygodnie lub miesiące."
+        },
+        "last_done": {
+          "name": "Ostatnio zrobione",
+          "description": "Dziś, jeśli puste."
+        },
+        "category": {
+          "name": "Kategoria",
+          "description": "Grupuje zadanie w panelu."
+        },
+        "icon": {
+          "name": "Ikona",
+          "description": "Wyświetlana obok zadania."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Usuń zadanie",
+      "description": "Usuwa zadanie ręczne i jego przypomnienia.",
+      "fields": {
+        "item": {
+          "name": "Zadanie",
+          "description": "Zadanie (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Dni",
+        "weeks": "Tygodnie",
+        "months": "Miesiące"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Odkurzacz",
+        "purifier": "Oczyszczacz powietrza",
+        "printer": "Drukarka",
+        "safety": "Bezpieczeństwo",
+        "home": "Dom",
+        "garden": "Ogród",
+        "vehicle": "Pojazd",
+        "other": "Inne"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance nie jest skonfigurowane."
+    },
+    "unknown_item": {
+      "message": "Nieznany element: {item}."
+    }
+  }
+}

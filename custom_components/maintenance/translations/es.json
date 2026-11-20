@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mantenimiento",
+        "description": "Controla los consumibles de tus dispositivos (filtros, cepillos, tinta…) y tus tareas recurrentes. Nada que rellenar: los consumibles se encuentran solos y las tareas se añaden desde el panel Maintenance."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance ya está configurado."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Mantenimiento",
+        "data": {
+          "soon_days": "Pronto dentro de",
+          "soon_percent": "Consumible bajo al",
+          "reminder_time": "Recordatorio diario a las",
+          "notify_service": "Acción de recordatorio"
+        },
+        "data_description": {
+          "soon_days": "Una tarea (o un consumible a su ritmo actual) que vence en estos días cuenta como pronto.",
+          "soon_percent": "Un consumible en este porcentaje o por debajo cuenta como pronto.",
+          "reminder_time": "Una vez al día se envía lo que pasó a atrasado o pronto, cada elemento una vez.",
+          "notify_service": "Por ejemplo notify.mobile_app_phone o notify_hub.send; vacío para ningún recordatorio."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Atrasados"
+      },
+      "soon": {
+        "name": "Pronto"
+      },
+      "tracked": {
+        "name": "Seguidos"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Vencimientos"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Marcar como hecho",
+      "description": "Una tarea hecha hoy o un consumible sustituido: se pulsa el botón de reinicio del dispositivo si lo tiene.",
+      "fields": {
+        "item": {
+          "name": "Elemento",
+          "description": "El sensor de un consumible (sensor.…) o una tarea (task:…), como en el panel."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Añadir una tarea",
+      "description": "Una tarea manual repetida cada N días, semanas o meses.",
+      "fields": {
+        "name": {
+          "name": "Nombre",
+          "description": "Qué hay que hacer."
+        },
+        "every": {
+          "name": "Cada",
+          "description": "Cuántos días, semanas o meses entre dos veces."
+        },
+        "unit": {
+          "name": "Unidad",
+          "description": "Días, semanas o meses."
+        },
+        "last_done": {
+          "name": "Última vez",
+          "description": "Hoy si se deja vacío."
+        },
+        "category": {
+          "name": "Categoría",
+          "description": "Agrupa la tarea en el panel."
+        },
+        "icon": {
+          "name": "Icono",
+          "description": "Se muestra junto a la tarea."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Eliminar una tarea",
+      "description": "Elimina una tarea manual y sus recordatorios.",
+      "fields": {
+        "item": {
+          "name": "Tarea",
+          "description": "La tarea (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Días",
+        "weeks": "Semanas",
+        "months": "Meses"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Aspiradora",
+        "purifier": "Purificador de aire",
+        "printer": "Impresora",
+        "safety": "Seguridad",
+        "home": "Casa",
+        "garden": "Jardín",
+        "vehicle": "Vehículo",
+        "other": "Otro"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance no está configurado."
+    },
+    "unknown_item": {
+      "message": "Elemento desconocido: {item}."
+    }
+  }
+}
