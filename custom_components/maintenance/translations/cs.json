@@ -18,13 +18,15 @@
           "soon_days": "Brzy do",
           "soon_percent": "Spotřební materiál nízký při",
           "reminder_time": "Denní připomínka v",
-          "notify_service": "Akce připomínky"
+          "notify_service": "Akce připomínky",
+          "hide_header": "Skrýt horní lištu"
         },
         "data_description": {
           "soon_days": "Úkol (nebo spotřební materiál při současném tempu) se splatností do tolika dní se počítá jako brzy.",
           "soon_percent": "Spotřební materiál na tomto procentu nebo pod ním se počítá jako brzy.",
           "reminder_time": "Jednou denně se pošle to, co je po termínu nebo brzy, každá položka jednou.",
-          "notify_service": "Například notify.mobile_app_phone nebo notify_hub.send; prázdné bez připomínky."
+          "notify_service": "Například notify.mobile_app_phone nebo notify_hub.send; prázdné bez připomínky.",
+          "hide_header": "Ilustrovaná hlavička nad kartami; karty zůstanou a na telefonu se tlačítko nabídky přesune vedle nich."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Zahrada",
         "vehicle": "Vozidlo",
         "other": "Jiné"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "Ne",
+        "all": "Pro všechny",
+        "non_admin": "Pro neadministrátory"
       }
     }
   },

@@ -34,6 +34,11 @@ jobs:
       - name: Same version everywhere, and in the changelog
         run: |
           VERSION="$(jq -r .version custom_components/maintenance/manifest.json)"
+          grep -q "^VERSION: Final = \"$VERSION\"" custom_components/maintenance/const.py || { echo "::error file=custom_components/maintenance/const.py::VERSION is not $VERSION"; exit 1; }
+          for js in maintenance-panel.js:MAINTENANCE_PANEL_VERSION maintenance-card.js:MAINTENANCE_CARD_VERSION; do
+            file="custom_components/maintenance/frontend/${js%%:*}"
+            grep -q "^var ${js##*:} = '$VERSION';" "$file" || { echo "::error file=$file::${js##*:} is not $VERSION"; exit 1; }
+          done
           grep -q "^## $VERSION " CHANGELOG.md || { echo "::error file=CHANGELOG.md::no '## $VERSION' entry in CHANGELOG.md"; exit 1; }
           echo "Version $VERSION everywhere"
 

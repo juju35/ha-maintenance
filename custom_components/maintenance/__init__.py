@@ -37,7 +37,7 @@ type MaintenanceConfigEntry = ConfigEntry[MaintenanceTracker]
 DONE_SCHEMA = vol.Schema({vol.Required(ATTR_ITEM): cv.string})
 TASK_SCHEMA = vol.Schema(
     {
-        vol.Required(ATTR_NAME): cv.string,
+        vol.Required(ATTR_NAME): vol.All(cv.string, vol.Strip, vol.Length(min=1, max=80)),
         vol.Required(ATTR_EVERY): vol.All(vol.Coerce(int), vol.Range(min=1, max=999)),
         vol.Optional(ATTR_UNIT, default="months"): vol.In(UNITS),
         vol.Optional(ATTR_LAST_DONE): cv.date,

@@ -8,9 +8,11 @@ import voluptuous as vol
 from homeassistant.components import websocket_api
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers import config_validation as cv
 
 from .const import (
     CATEGORIES,
+    CONF_HIDE_HEADER,
     CONF_IGNORED,
     CONF_NOTIFY_SERVICE,
     CONF_REMINDER_TIME,
@@ -18,6 +20,7 @@ from .const import (
     CONF_SOON_PERCENT,
     DEFAULT_REMINDER_TIME,
     DOMAIN,
+    HIDE_HEADER_CHOICES,
     UNITS,
     VERSION,
 )
@@ -30,17 +33,19 @@ OPTION_SCHEMA = vol.Schema(
         vol.Optional(CONF_REMINDER_TIME): str,
         vol.Optional(CONF_NOTIFY_SERVICE): vol.Any(None, str),
         vol.Optional(CONF_IGNORED): [str],
+        vol.Optional(CONF_HIDE_HEADER): vol.In(HIDE_HEADER_CHOICES),
     }
 )
 TASK_SCHEMA = vol.Schema(
     {
         vol.Optional("id"): str,
-        vol.Required("name"): vol.All(str, vol.Length(min=1, max=80)),
+        vol.Required("name"): vol.All(str, vol.Strip, vol.Length(min=1, max=80)),
         vol.Required("every"): vol.All(vol.Coerce(int), vol.Range(min=1, max=999)),
         vol.Required("unit"): vol.In(UNITS),
         vol.Optional("category", default="home"): vol.In(CATEGORIES),
-        vol.Optional("icon"): str,
-        vol.Optional("last_done"): vol.Match(r"^\d{4}-\d{2}-\d{2}$"),
+        vol.Optional("icon"): cv.icon,
+        # A real date (2026-13-45 matched the old pattern and broke every item's due date), kept as ISO text.
+        vol.Optional("last_done"): vol.All(cv.date, lambda d: d.isoformat()),
     }
 )
 

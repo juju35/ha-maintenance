@@ -208,7 +208,7 @@ async def test_config_flow(hass: HomeAssistant):
         result["flow_id"], {"soon_days": 7, "soon_percent": 10, "reminder_time": "08:30:00", "notify_service": ""}
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert entry.options == {"soon_days": 7, "soon_percent": 10, "reminder_time": "08:30"}
+    assert entry.options == {"soon_days": 7, "soon_percent": 10, "reminder_time": "08:30", "hide_header": "off"}
     again = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})
     assert again["type"] is FlowResultType.ABORT
 
@@ -223,6 +223,140 @@ async def test_not_consumables(hass: HomeAssistant, tracker):
     assert "sensor.garden_soil_sensor_level" not in found
     assert "sensor.fridge_filter_status" not in found
     assert "sensor.vacuum_brush_lifespan" in found
+
+
+async def test_options_change_after_startup_logs_nothing(hass: HomeAssistant, devices, freezer, caplog):
+    """Set up before Home Assistant has started: the start listener, once fired, is not removed again later."""
+    from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
+    from homeassistant.core import CoreState
+
+    freezer.move_to(NOW)
+    hass.set_state(CoreState.starting)
+    entry = MockConfigEntry(domain=DOMAIN, title="Maintenance", options={"soon_days": 14, "soon_percent": 15})
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    hass.set_state(CoreState.running)
+    hass.bus.async_fire(EVENT_HOMEASSISTANT_STARTED)
+    await hass.async_block_till_done()
+    assert entry.runtime_data.found()
+    hass.config_entries.async_update_entry(entry, options={**entry.options, "soon_days": 7})
+    await hass.async_block_till_done()
+    assert await hass.config_entries.async_unload(entry.entry_id)
+    assert "Unable to remove unknown job listener" not in caplog.text
+
+
+async def test_panel_task_validation(hass: HomeAssistant, tracker, hass_ws_client):
+    """An impossible date or icon is refused, so a stored task can never break every due date."""
+    client = await hass_ws_client(hass)
+    for task in (
+        {"name": "Gutters", "every": 6, "unit": "months", "last_done": "2026-13-45"},
+        {"name": "Gutters", "every": 6, "unit": "months", "icon": "not an icon"},
+        {"name": "   ", "every": 6, "unit": "months"},
+    ):
+        await client.send_json_auto_id({"type": f"{DOMAIN}/task", "task": task})
+        response = await client.receive_json()
+        assert not response["success"]
+        assert response["error"]["code"] == "invalid"
+    await client.send_json_auto_id(
+        {"type": f"{DOMAIN}/task", "task": {"name": " Gutters ", "every": 6, "unit": "months", "icon": "mdi:leaf",
+                                            "last_done": "2026-05-01"}}
+    )  # fmt: skip
+    task = (await client.receive_json())["result"]
+    assert (task["name"], task["icon"], task["last_done"]) == ("Gutters", "mdi:leaf", "2026-05-01")
+    assert _item(tracker, f"task:{task['id']}")["due"] == "2026-11-01"
+
+
+async def test_reminder_failure_is_retried(hass: HomeAssistant, tracker):
+    from homeassistant.exceptions import HomeAssistantError
+
+    async def broken(call: ServiceCall) -> None:
+        raise HomeAssistantError("offline")
+
+    hass.services.async_register("notify", "broken", broken)
+    hass.config_entries.async_update_entry(
+        tracker.entry, options={**tracker.entry.options, "notify_service": "notify.broken"}
+    )
+    await hass.async_block_till_done()
+    assert await tracker.async_remind_now() == 0
+    calls = async_mock_service(hass, "notify", "broken")
+    assert await tracker.async_remind_now() == 2
+    assert len(calls) == 1
+
+
+async def test_diagnostics_leave_names_out(hass: HomeAssistant, tracker):
+    from custom_components.maintenance.diagnostics import async_get_config_entry_diagnostics
+
+    tracker.save_task({"name": "Secret chore", "every": 1, "unit": "weeks"})
+    data = await async_get_config_entry_diagnostics(hass, tracker.entry)
+    assert "Secret chore" not in str(data)
+    assert data["counts"]["tracked"] == 4
+
+
+class _Resources:
+    """A dashboard resources collection in storage mode."""
+
+    def __init__(self, items):
+        self.items = [dict(i) for i in items]
+
+    async def async_get_info(self):
+        return {}
+
+    def async_items(self):
+        return self.items
+
+    async def async_create_item(self, data):
+        self.items.append({"id": str(len(self.items) + 1), **data})
+
+    async def async_update_item(self, item_id, data):
+        next(i for i in self.items if i["id"] == item_id).update(data)
+
+    async def async_delete_item(self, item_id):
+        self.items = [i for i in self.items if i["id"] != item_id]
+
+
+async def test_card_resource(hass: HomeAssistant):
+    from custom_components.maintenance import panel
+
+    url = "/maintenance_static/maintenance-card.js"
+    resources = _Resources(
+        [{"id": "1", "url": f"{url}?v=0.1.0", "res_type": "module"}, {"id": "2", "url": url, "res_type": "module"}]
+    )
+    hass.data["lovelace"] = {"resource_mode": "storage", "resources": resources}
+    assert await panel._async_register_resource(hass, f"{url}?v=9.9.9")
+    assert [i["url"] for i in resources.items] == [f"{url}?v=9.9.9"]
+    await panel.async_remove_card(hass)
+    assert resources.items == []
+    assert await panel._async_register_resource(hass, f"{url}?v=9.9.9")
+    assert len(resources.items) == 1
+    hass.data["lovelace"] = {"resource_mode": "yaml", "resources": resources}
+    assert not await panel._async_register_resource(hass, f"{url}?v=9.9.9")
+
+
+async def test_unavailable_consumable_greyed(hass: HomeAssistant, tracker):
+    """An unavailable consumable stays listed, last, with no due date, never counted nor reminded."""
+    calls = async_mock_service(hass, "notify", "phone")
+    hass.config_entries.async_update_entry(
+        tracker.entry, options={**tracker.entry.options, "notify_service": "notify.phone"}
+    )
+    await hass.async_block_till_done()
+    hass.states.async_set("sensor.purifier_filter_life_level", "unavailable", {"unit_of_measurement": "%"})
+    await hass.async_block_till_done()
+    item = _item(tracker, "sensor.purifier_filter_life_level")
+    assert (item["status"], item["percent"], item["due"]) == ("unavailable", None, None)
+    assert tracker.items()[-1]["id"] == "sensor.purifier_filter_life_level"
+    counts = tracker.counts()
+    assert (counts["soon"], counts["unavailable"], counts["tracked"]) == (0, 1, 3)
+    assert await tracker.async_remind_now() == 1
+    assert "purifier" not in calls[0].data["message"].lower()
+
+
+async def test_hide_header_option(hass: HomeAssistant, tracker, hass_ws_client):
+    client = await hass_ws_client(hass)
+    await client.send_json_auto_id({"type": f"{DOMAIN}/save", "options": {"hide_header": "all"}})
+    assert (await client.receive_json())["result"]["options"]["hide_header"] == "all"
+    await client.send_json_auto_id({"type": f"{DOMAIN}/save", "options": {"hide_header": "sometimes"}})
+    assert not (await client.receive_json())["success"]
 
 
 async def test_translated_vacuum(hass: HomeAssistant, tracker):
@@ -281,3 +415,5 @@ async def test_translated_vacuum(hass: HomeAssistant, tracker):
     assert (clean["status"], clean["state"]) == ("ok", "ok")
     await tracker.async_done("binary_sensor.saros_dock_reservoir_d_eau_sale")
     assert tracker.history[0]["item"] == "binary_sensor.saros_dock_reservoir_d_eau_sale"
+    hass.states.async_set("binary_sensor.saros_dock_reservoir_d_eau_propre", "unavailable", {"device_class": "problem"})
+    assert _item(tracker, "binary_sensor.saros_dock_reservoir_d_eau_propre")["status"] == "unavailable"

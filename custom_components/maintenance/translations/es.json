@@ -18,13 +18,15 @@
           "soon_days": "Pronto dentro de",
           "soon_percent": "Consumible bajo al",
           "reminder_time": "Recordatorio diario a las",
-          "notify_service": "Acción de recordatorio"
+          "notify_service": "Acción de recordatorio",
+          "hide_header": "Ocultar la barra superior"
         },
         "data_description": {
           "soon_days": "Una tarea (o un consumible a su ritmo actual) que vence en estos días cuenta como pronto.",
           "soon_percent": "Un consumible en este porcentaje o por debajo cuenta como pronto.",
           "reminder_time": "Una vez al día se envía lo que pasó a atrasado o pronto, cada elemento una vez.",
-          "notify_service": "Por ejemplo notify.mobile_app_phone o notify_hub.send; vacío para ningún recordatorio."
+          "notify_service": "Por ejemplo notify.mobile_app_phone o notify_hub.send; vacío para ningún recordatorio.",
+          "hide_header": "La cabecera ilustrada sobre las pestañas; las pestañas se mantienen y, en el móvil, el botón de menú pasa junto a ellas."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Jardín",
         "vehicle": "Vehículo",
         "other": "Otro"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "No",
+        "all": "Para todos",
+        "non_admin": "Para no administradores"
       }
     }
   },

@@ -18,13 +18,15 @@
           "soon_days": "În curând în",
           "soon_percent": "Consumabil scăzut la",
           "reminder_time": "Memento zilnic la",
-          "notify_service": "Acțiune de memento"
+          "notify_service": "Acțiune de memento",
+          "hide_header": "Ascunde bara de sus"
         },
         "data_description": {
           "soon_days": "O sarcină (sau un consumabil în ritmul actual) scadentă în aceste zile contează ca în curând.",
           "soon_percent": "Un consumabil la acest procent sau sub el contează ca în curând.",
           "reminder_time": "O dată pe zi se trimite ce a devenit întârziat sau în curând, fiecare element o dată.",
-          "notify_service": "De exemplu notify.mobile_app_phone sau notify_hub.send; gol pentru niciun memento."
+          "notify_service": "De exemplu notify.mobile_app_phone sau notify_hub.send; gol pentru niciun memento.",
+          "hide_header": "Antetul ilustrat de deasupra filelor; filele rămân, iar pe telefon butonul de meniu trece lângă ele."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Grădină",
         "vehicle": "Vehicul",
         "other": "Altele"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "Nu",
+        "all": "Pentru toți",
+        "non_admin": "Pentru non-administratori"
       }
     }
   },

@@ -18,13 +18,15 @@
           "soon_days": "Binnenkort binnen",
           "soon_percent": "Verbruiksartikel laag bij",
           "reminder_time": "Dagelijkse herinnering om",
-          "notify_service": "Herinneringsactie"
+          "notify_service": "Herinneringsactie",
+          "hide_header": "Bovenste balk verbergen"
         },
         "data_description": {
           "soon_days": "Een taak (of een verbruiksartikel in het huidige tempo) die binnen zoveel dagen vervalt, telt als binnenkort.",
           "soon_percent": "Een verbruiksartikel op of onder dit percentage telt als binnenkort.",
           "reminder_time": "Eén keer per dag wordt verstuurd wat te laat of binnenkort werd, elk item één keer.",
-          "notify_service": "Bijvoorbeeld notify.mobile_app_phone of notify_hub.send; leeg voor geen herinnering."
+          "notify_service": "Bijvoorbeeld notify.mobile_app_phone of notify_hub.send; leeg voor geen herinnering.",
+          "hide_header": "De geïllustreerde kop boven de tabbladen; de tabbladen blijven en op een telefoon komt de menuknop ernaast."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Tuin",
         "vehicle": "Voertuig",
         "other": "Overig"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "Nee",
+        "all": "Voor iedereen",
+        "non_admin": "Voor niet-beheerders"
       }
     }
   },

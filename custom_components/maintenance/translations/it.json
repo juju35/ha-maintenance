@@ -18,13 +18,15 @@
           "soon_days": "A breve entro",
           "soon_percent": "Consumabile basso al",
           "reminder_time": "Promemoria giornaliero alle",
-          "notify_service": "Azione di promemoria"
+          "notify_service": "Azione di promemoria",
+          "hide_header": "Nascondi la barra superiore"
         },
         "data_description": {
           "soon_days": "Un'attività (o un consumabile al ritmo attuale) in scadenza entro questi giorni conta come a breve.",
           "soon_percent": "Un consumabile a questa percentuale o sotto conta come a breve.",
           "reminder_time": "Una volta al giorno viene inviato ciò che è diventato in ritardo o a breve, ogni elemento una volta.",
-          "notify_service": "Ad esempio notify.mobile_app_phone o notify_hub.send; vuoto per nessun promemoria."
+          "notify_service": "Ad esempio notify.mobile_app_phone o notify_hub.send; vuoto per nessun promemoria.",
+          "hide_header": "L’intestazione illustrata sopra le schede; le schede restano e, sul telefono, il pulsante del menu passa accanto a esse."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Giardino",
         "vehicle": "Veicolo",
         "other": "Altro"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "No",
+        "all": "Per tutti",
+        "non_admin": "Per i non amministratori"
       }
     }
   },

@@ -18,13 +18,15 @@
           "soon_days": "Bientôt dans les",
           "soon_percent": "Consommable bas à",
           "reminder_time": "Rappel quotidien à",
-          "notify_service": "Action de rappel"
+          "notify_service": "Action de rappel",
+          "hide_header": "Masquer la barre du haut"
         },
         "data_description": {
           "soon_days": "Une tâche (ou un consommable à son rythme actuel) due dans ce nombre de jours compte comme bientôt.",
           "soon_percent": "Un consommable à ce pourcentage ou en dessous compte comme bientôt.",
           "reminder_time": "Une fois par jour, ce qui est passé en retard ou bientôt est envoyé, une seule fois par élément.",
-          "notify_service": "Par exemple notify.mobile_app_phone ou notify_hub.send ; vide pour aucun rappel."
+          "notify_service": "Par exemple notify.mobile_app_phone ou notify_hub.send ; vide pour aucun rappel.",
+          "hide_header": "L’en-tête illustré au-dessus des onglets ; les onglets restent, et sur téléphone le bouton de menu passe à côté d’eux."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Jardin",
         "vehicle": "Véhicule",
         "other": "Autre"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "Non",
+        "all": "Pour tout le monde",
+        "non_admin": "Pour les non-admins"
       }
     }
   },
