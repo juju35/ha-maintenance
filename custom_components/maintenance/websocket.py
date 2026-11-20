@@ -8,6 +8,7 @@ import voluptuous as vol
 from homeassistant.components import websocket_api
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers import config_validation as cv
 
 from .const import (
     CATEGORIES,
@@ -35,12 +36,13 @@ OPTION_SCHEMA = vol.Schema(
 TASK_SCHEMA = vol.Schema(
     {
         vol.Optional("id"): str,
-        vol.Required("name"): vol.All(str, vol.Length(min=1, max=80)),
+        vol.Required("name"): vol.All(str, vol.Strip, vol.Length(min=1, max=80)),
         vol.Required("every"): vol.All(vol.Coerce(int), vol.Range(min=1, max=999)),
         vol.Required("unit"): vol.In(UNITS),
         vol.Optional("category", default="home"): vol.In(CATEGORIES),
-        vol.Optional("icon"): str,
-        vol.Optional("last_done"): vol.Match(r"^\d{4}-\d{2}-\d{2}$"),
+        vol.Optional("icon"): cv.icon,
+        # A real date (2026-13-45 matched the old pattern and broke every item's due date), kept as ISO text.
+        vol.Optional("last_done"): vol.All(cv.date, lambda d: d.isoformat()),
     }
 )
 

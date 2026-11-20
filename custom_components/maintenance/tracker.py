@@ -17,9 +17,11 @@ from collections.abc import Callable
 from datetime import date, datetime, time, timedelta
 from typing import Any
 
+import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STARTED, UnitOfTime
 from homeassistant.core import CALLBACK_TYPE, CoreState, Event, HomeAssistant, callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.event import (
@@ -134,6 +136,7 @@ class MaintenanceTracker:
         self._listeners: list[CALLBACK_TYPE] = []
         self._unsubs: list[Callable[[], None]] = []
         self._unsub_states: Callable[[], None] | None = None
+        self._unsub_started: Callable[[], None] | None = None
 
     # ── Life cycle ──────────────────────────────────────────────────────────
 
@@ -149,16 +152,22 @@ class MaintenanceTracker:
         else:
             # A @callback, so it runs in the event loop: a plain lambda is run in an executor thread, from where
             # the entities' state writes are refused.
+            # Kept apart from the timers: once fired, a one-time listener must not be removed again (Home Assistant
+            # logs an error), and the timers are removed at every options change.
             @callback
             def _started(_event: Event) -> None:
+                self._unsub_started = None
                 self.async_discover()
 
-            self._unsubs.append(self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _started))
+            self._unsub_started = self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _started)
 
     async def async_unload(self) -> None:
         for unsub in self._unsubs:
             unsub()
         self._unsubs.clear()
+        if self._unsub_started:
+            self._unsub_started()
+            self._unsub_started = None
         if self._unsub_states:
             self._unsub_states()
             self._unsub_states = None
@@ -448,8 +457,8 @@ class MaintenanceTracker:
             "ignored": info["ignored"],
         }
 
-    def counts(self) -> dict[str, int]:
-        items = self.items()
+    def counts(self, items: list[dict[str, Any]] | None = None) -> dict[str, int]:
+        items = self.items() if items is None else items
         month = dt_util.now().strftime("%Y-%m")
         counts = {s: sum(i["status"] == s for i in items) for s in STATUSES}
         counts["tracked"] = len(items)
@@ -461,7 +470,7 @@ class MaintenanceTracker:
         items = self.items()
         keep = ("id", "kind", "name", "category", "icon", "source", "percent", "hours", "days_left", "due", "status")
         keep += ("every", "unit", "can_reset")
-        return {"counts": self.counts(), "items": [{k: i.get(k) for k in keep} for i in items[:limit]]}
+        return {"counts": self.counts(items), "items": [{k: i.get(k) for k in keep} for i in items[:limit]]}
 
     @property
     def history(self) -> list[dict[str, Any]]:
@@ -501,8 +510,9 @@ class MaintenanceTracker:
         """Once a day: tell about what became overdue or soon since the last time (each item once per status)."""
         service = self.options.get(CONF_NOTIFY_SERVICE)
         notified: dict[str, str] = self._data["notified"]
-        fresh = [i for i in self.items() if i["status"] != STATUS_OK and notified.get(i["id"]) != i["status"]]
-        for item in self.items():
+        items = self.items()
+        fresh = [i for i in items if i["status"] != STATUS_OK and notified.get(i["id"]) != i["status"]]
+        for item in items:
             if item["status"] == STATUS_OK:
                 notified.pop(item["id"], None)
         if not fresh or not service:
@@ -519,7 +529,12 @@ class MaintenanceTracker:
             payload |= {"priority": "info", "topic": "maintenance", "source": "Maintenance"}
         else:
             payload["data"] = {"url": f"/{PANEL_URL}", "clickAction": f"/{PANEL_URL}", "tag": "maintenance"}
-        await self.hass.services.async_call(domain, name, payload, blocking=True)
+        try:
+            await self.hass.services.async_call(domain, name, payload, blocking=True)
+        except (HomeAssistantError, vol.Invalid) as err:
+            # Not marked as sent: tried again at the next reminder.
+            _LOGGER.warning("Maintenance: the reminder through %s failed: %s", service, err)
+            return 0
         for item in fresh:
             notified[item["id"]] = item["status"]
         self._store.async_delay_save(lambda: self._data, SAVE_DELAY)
