@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Întreținere",
+        "description": "Urmăriți consumabilele dispozitivelor (filtre, perii, cerneală…) și treburile recurente. Nimic de completat: consumabilele sunt găsite singure, iar sarcinile se adaugă din panoul Maintenance."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance este deja configurat."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Întreținere",
+        "data": {
+          "soon_days": "În curând în",
+          "soon_percent": "Consumabil scăzut la",
+          "reminder_time": "Memento zilnic la",
+          "notify_service": "Acțiune de memento"
+        },
+        "data_description": {
+          "soon_days": "O sarcină (sau un consumabil în ritmul actual) scadentă în aceste zile contează ca în curând.",
+          "soon_percent": "Un consumabil la acest procent sau sub el contează ca în curând.",
+          "reminder_time": "O dată pe zi se trimite ce a devenit întârziat sau în curând, fiecare element o dată.",
+          "notify_service": "De exemplu notify.mobile_app_phone sau notify_hub.send; gol pentru niciun memento."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Întârziate"
+      },
+      "soon": {
+        "name": "În curând"
+      },
+      "tracked": {
+        "name": "Urmărite"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Scadențe"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Marchează ca făcut",
+      "description": "O sarcină făcută azi sau un consumabil înlocuit: butonul de resetare al dispozitivului este apăsat dacă există.",
+      "fields": {
+        "item": {
+          "name": "Element",
+          "description": "Senzorul unui consumabil (sensor.…) sau o sarcină (task:…), ca în panou."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Adaugă o sarcină",
+      "description": "O sarcină manuală repetată la fiecare N zile, săptămâni sau luni.",
+      "fields": {
+        "name": {
+          "name": "Nume",
+          "description": "Ce trebuie făcut."
+        },
+        "every": {
+          "name": "La fiecare",
+          "description": "Câte zile, săptămâni sau luni între două dăți."
+        },
+        "unit": {
+          "name": "Unitate",
+          "description": "Zile, săptămâni sau luni."
+        },
+        "last_done": {
+          "name": "Ultima dată",
+          "description": "Azi dacă e gol."
+        },
+        "category": {
+          "name": "Categorie",
+          "description": "Grupează sarcina în panou."
+        },
+        "icon": {
+          "name": "Pictogramă",
+          "description": "Afișată lângă sarcină."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Elimină o sarcină",
+      "description": "Șterge o sarcină manuală și mementourile ei.",
+      "fields": {
+        "item": {
+          "name": "Sarcină",
+          "description": "Sarcina (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Zile",
+        "weeks": "Săptămâni",
+        "months": "Luni"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Aspirator",
+        "purifier": "Purificator de aer",
+        "printer": "Imprimantă",
+        "safety": "Siguranță",
+        "home": "Casă",
+        "garden": "Grădină",
+        "vehicle": "Vehicul",
+        "other": "Altele"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance nu este configurat."
+    },
+    "unknown_item": {
+      "message": "Element necunoscut: {item}."
+    }
+  }
+}

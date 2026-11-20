@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Apkope",
+        "description": "Sekojiet ierīču palīgmateriāliem (filtri, sukas, tinte…) un atkārtotajiem darbiem. Nekas nav jāaizpilda: palīgmateriāli tiek atrasti paši, bet uzdevumus pievieno Maintenance panelī."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance jau ir iestatīts."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Apkope",
+        "data": {
+          "soon_days": "Drīz",
+          "soon_percent": "Palīgmateriāls zems pie",
+          "reminder_time": "Ikdienas atgādinājums plkst.",
+          "notify_service": "Atgādinājuma darbība"
+        },
+        "data_description": {
+          "soon_days": "Uzdevums (vai palīgmateriāls pašreizējā tempā) ar termiņu šajās dienās skaitās kā drīz.",
+          "soon_percent": "Palīgmateriāls šajā procentā vai zemāk skaitās kā drīz.",
+          "reminder_time": "Reizi dienā tiek nosūtīts tas, kas kļuvis nokavēts vai drīz, katrs vienums vienreiz.",
+          "notify_service": "Piemēram, notify.mobile_app_phone vai notify_hub.send; tukšs — bez atgādinājuma."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Nokavēti"
+      },
+      "soon": {
+        "name": "Drīz"
+      },
+      "tracked": {
+        "name": "Sekoti"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Termiņi"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Atzīmēt kā izdarītu",
+      "description": "Šodien izdarīts uzdevums vai nomainīts palīgmateriāls: tiek nospiesta ierīces atiestatīšanas poga, ja tāda ir.",
+      "fields": {
+        "item": {
+          "name": "Vienums",
+          "description": "Palīgmateriāla sensors (sensor.…) vai uzdevums (task:…), kā panelī."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Pievienot uzdevumu",
+      "description": "Manuāls uzdevums, kas atkārtojas ik pēc N dienām, nedēļām vai mēnešiem.",
+      "fields": {
+        "name": {
+          "name": "Nosaukums",
+          "description": "Kas jādara."
+        },
+        "every": {
+          "name": "Ik pēc",
+          "description": "Cik dienu, nedēļu vai mēnešu starp divām reizēm."
+        },
+        "unit": {
+          "name": "Vienība",
+          "description": "Dienas, nedēļas vai mēneši."
+        },
+        "last_done": {
+          "name": "Pēdējo reizi izdarīts",
+          "description": "Šodien, ja tukšs."
+        },
+        "category": {
+          "name": "Kategorija",
+          "description": "Grupē uzdevumu panelī."
+        },
+        "icon": {
+          "name": "Ikona",
+          "description": "Rādīta blakus uzdevumam."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Noņemt uzdevumu",
+      "description": "Dzēš manuālu uzdevumu un tā atgādinājumus.",
+      "fields": {
+        "item": {
+          "name": "Uzdevums",
+          "description": "Uzdevums (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Dienas",
+        "weeks": "Nedēļas",
+        "months": "Mēneši"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Putekļsūcējs",
+        "purifier": "Gaisa attīrītājs",
+        "printer": "Printeris",
+        "safety": "Drošība",
+        "home": "Mājas",
+        "garden": "Dārzs",
+        "vehicle": "Transportlīdzeklis",
+        "other": "Cits"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance nav iestatīts."
+    },
+    "unknown_item": {
+      "message": "Nezināms vienums: {item}."
+    }
+  }
+}

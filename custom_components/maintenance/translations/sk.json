@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Údržba",
+        "description": "Sledujte spotrebný materiál zariadení (filtre, kefy, atrament…) a opakujúce sa práce. Nič na vyplnenie: spotrebný materiál sa nájde sám a úlohy sa pridávajú v paneli Maintenance."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance je už nastavené."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Údržba",
+        "data": {
+          "soon_days": "Čoskoro do",
+          "soon_percent": "Spotrebný materiál nízky pri",
+          "reminder_time": "Denná pripomienka o",
+          "notify_service": "Akcia pripomienky"
+        },
+        "data_description": {
+          "soon_days": "Úloha (alebo spotrebný materiál pri súčasnom tempe) so splatnosťou do toľkých dní sa počíta ako čoskoro.",
+          "soon_percent": "Spotrebný materiál na tomto percente alebo pod ním sa počíta ako čoskoro.",
+          "reminder_time": "Raz denne sa pošle to, čo je po termíne alebo čoskoro, každá položka raz.",
+          "notify_service": "Napríklad notify.mobile_app_phone alebo notify_hub.send; prázdne bez pripomienky."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Po termíne"
+      },
+      "soon": {
+        "name": "Čoskoro"
+      },
+      "tracked": {
+        "name": "Sledované"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Termíny"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Označiť ako hotové",
+      "description": "Úloha urobená dnes alebo vymenený spotrebný materiál: stlačí sa tlačidlo resetu zariadenia, ak ho má.",
+      "fields": {
+        "item": {
+          "name": "Položka",
+          "description": "Senzor spotrebného materiálu (sensor.…) alebo úloha (task:…), ako v paneli."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Pridať úlohu",
+      "description": "Ručná úloha opakovaná každých N dní, týždňov alebo mesiacov.",
+      "fields": {
+        "name": {
+          "name": "Názov",
+          "description": "Čo treba urobiť."
+        },
+        "every": {
+          "name": "Každých",
+          "description": "Koľko dní, týždňov alebo mesiacov medzi dvoma razmi."
+        },
+        "unit": {
+          "name": "Jednotka",
+          "description": "Dni, týždne alebo mesiace."
+        },
+        "last_done": {
+          "name": "Naposledy urobené",
+          "description": "Dnes, ak je prázdne."
+        },
+        "category": {
+          "name": "Kategória",
+          "description": "Zoskupí úlohu v paneli."
+        },
+        "icon": {
+          "name": "Ikona",
+          "description": "Zobrazená vedľa úlohy."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Odstrániť úlohu",
+      "description": "Vymaže ručnú úlohu a jej pripomienky.",
+      "fields": {
+        "item": {
+          "name": "Úloha",
+          "description": "Úloha (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Dni",
+        "weeks": "Týždne",
+        "months": "Mesiace"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Vysávač",
+        "purifier": "Čistička vzduchu",
+        "printer": "Tlačiareň",
+        "safety": "Bezpečnosť",
+        "home": "Domov",
+        "garden": "Záhrada",
+        "vehicle": "Vozidlo",
+        "other": "Iné"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance nie je nastavené."
+    },
+    "unknown_item": {
+      "message": "Neznáma položka: {item}."
+    }
+  }
+}

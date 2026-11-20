@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Vedligeholdelse",
+        "description": "Følg dine enheders forbrugsstoffer (filtre, børster, blæk…) og dine tilbagevendende opgaver. Intet at udfylde: forbrugsstofferne findes af sig selv, og opgaverne tilføjes i Maintenance-panelet."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance er allerede sat op."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Vedligeholdelse",
+        "data": {
+          "soon_days": "Snart inden for",
+          "soon_percent": "Forbrugsstof lavt ved",
+          "reminder_time": "Daglig påmindelse kl.",
+          "notify_service": "Påmindelseshandling"
+        },
+        "data_description": {
+          "soon_days": "En opgave (eller et forbrugsstof i det nuværende tempo), der forfalder inden for så mange dage, tæller som snart.",
+          "soon_percent": "Et forbrugsstof på eller under denne procent tæller som snart.",
+          "reminder_time": "Én gang om dagen sendes det, der er blevet forsinket eller snart, hvert element én gang.",
+          "notify_service": "For eksempel notify.mobile_app_phone eller notify_hub.send; tom for ingen påmindelse."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Forsinket"
+      },
+      "soon": {
+        "name": "Snart"
+      },
+      "tracked": {
+        "name": "Fulgt"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Forfaldsdatoer"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Markér som udført",
+      "description": "En opgave udført i dag eller et forbrugsstof udskiftet: enhedens nulstillingsknap trykkes, hvis den har en.",
+      "fields": {
+        "item": {
+          "name": "Element",
+          "description": "Et forbrugsstofs sensor (sensor.…) eller en opgave (task:…), som i panelet."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Tilføj en opgave",
+      "description": "En manuel opgave gentaget hver N dage, uger eller måneder.",
+      "fields": {
+        "name": {
+          "name": "Navn",
+          "description": "Hvad der skal gøres."
+        },
+        "every": {
+          "name": "Hver",
+          "description": "Hvor mange dage, uger eller måneder mellem to gange."
+        },
+        "unit": {
+          "name": "Enhed",
+          "description": "Dage, uger eller måneder."
+        },
+        "last_done": {
+          "name": "Sidst udført",
+          "description": "I dag, hvis tom."
+        },
+        "category": {
+          "name": "Kategori",
+          "description": "Grupperer opgaven i panelet."
+        },
+        "icon": {
+          "name": "Ikon",
+          "description": "Vises ved siden af opgaven."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Fjern en opgave",
+      "description": "Sletter en manuel opgave og dens påmindelser.",
+      "fields": {
+        "item": {
+          "name": "Opgave",
+          "description": "Opgaven (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Dage",
+        "weeks": "Uger",
+        "months": "Måneder"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Støvsuger",
+        "purifier": "Luftrenser",
+        "printer": "Printer",
+        "safety": "Sikkerhed",
+        "home": "Hjem",
+        "garden": "Have",
+        "vehicle": "Køretøj",
+        "other": "Andet"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance er ikke sat op."
+    },
+    "unknown_item": {
+      "message": "Ukendt element: {item}."
+    }
+  }
+}

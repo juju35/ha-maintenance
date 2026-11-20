@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Wartung",
+        "description": "Verfolgen Sie die Verbrauchsmaterialien Ihrer Geräte (Filter, Bürsten, Tinte…) und wiederkehrende Aufgaben. Nichts auszufüllen: Verbrauchsmaterialien werden automatisch gefunden, Aufgaben im Maintenance-Panel hinzugefügt."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance ist bereits eingerichtet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Wartung",
+        "data": {
+          "soon_days": "Bald fällig innerhalb von",
+          "soon_percent": "Verbrauchsmaterial niedrig bei",
+          "reminder_time": "Tägliche Erinnerung um",
+          "notify_service": "Erinnerungsaktion"
+        },
+        "data_description": {
+          "soon_days": "Eine Aufgabe (oder ein Verbrauchsmaterial im aktuellen Tempo), die in so vielen Tagen fällig ist, gilt als bald.",
+          "soon_percent": "Ein Verbrauchsmaterial bei oder unter diesem Prozentsatz gilt als bald.",
+          "reminder_time": "Einmal täglich wird gesendet, was überfällig oder bald fällig wurde, jedes Element einmal.",
+          "notify_service": "Zum Beispiel notify.mobile_app_phone oder notify_hub.send; leer lassen für keine Erinnerung."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Überfällig"
+      },
+      "soon": {
+        "name": "Bald fällig"
+      },
+      "tracked": {
+        "name": "Verfolgt"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Fälligkeiten"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Als erledigt markieren",
+      "description": "Eine heute erledigte Aufgabe oder ein ersetztes Verbrauchsmaterial: Die Reset-Taste des Geräts wird gedrückt, wenn vorhanden.",
+      "fields": {
+        "item": {
+          "name": "Element",
+          "description": "Der Sensor eines Verbrauchsmaterials (sensor.…) oder eine Aufgabe (task:…), wie im Panel."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Aufgabe hinzufügen",
+      "description": "Eine manuelle Aufgabe, alle N Tage, Wochen oder Monate wiederholt.",
+      "fields": {
+        "name": {
+          "name": "Name",
+          "description": "Was zu tun ist."
+        },
+        "every": {
+          "name": "Alle",
+          "description": "Wie viele Tage, Wochen oder Monate zwischen zwei Malen."
+        },
+        "unit": {
+          "name": "Einheit",
+          "description": "Tage, Wochen oder Monate."
+        },
+        "last_done": {
+          "name": "Zuletzt erledigt",
+          "description": "Heute, wenn leer."
+        },
+        "category": {
+          "name": "Kategorie",
+          "description": "Gruppiert die Aufgabe im Panel."
+        },
+        "icon": {
+          "name": "Symbol",
+          "description": "Neben der Aufgabe angezeigt."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Aufgabe entfernen",
+      "description": "Löscht eine manuelle Aufgabe und ihre Erinnerungen.",
+      "fields": {
+        "item": {
+          "name": "Aufgabe",
+          "description": "Die Aufgabe (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Tage",
+        "weeks": "Wochen",
+        "months": "Monate"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Staubsauger",
+        "purifier": "Luftreiniger",
+        "printer": "Drucker",
+        "safety": "Sicherheit",
+        "home": "Haus",
+        "garden": "Garten",
+        "vehicle": "Fahrzeug",
+        "other": "Sonstiges"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance ist nicht eingerichtet."
+    },
+    "unknown_item": {
+      "message": "Unbekanntes Element: {item}."
+    }
+  }
+}

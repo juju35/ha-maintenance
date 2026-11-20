@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Manutenzione",
+        "description": "Tieni traccia dei consumabili dei tuoi dispositivi (filtri, spazzole, inchiostro…) e delle attività ricorrenti. Niente da compilare: i consumabili vengono trovati da soli e le attività si aggiungono dal pannello Maintenance."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance è già configurato."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Manutenzione",
+        "data": {
+          "soon_days": "A breve entro",
+          "soon_percent": "Consumabile basso al",
+          "reminder_time": "Promemoria giornaliero alle",
+          "notify_service": "Azione di promemoria"
+        },
+        "data_description": {
+          "soon_days": "Un'attività (o un consumabile al ritmo attuale) in scadenza entro questi giorni conta come a breve.",
+          "soon_percent": "Un consumabile a questa percentuale o sotto conta come a breve.",
+          "reminder_time": "Una volta al giorno viene inviato ciò che è diventato in ritardo o a breve, ogni elemento una volta.",
+          "notify_service": "Ad esempio notify.mobile_app_phone o notify_hub.send; vuoto per nessun promemoria."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "In ritardo"
+      },
+      "soon": {
+        "name": "A breve"
+      },
+      "tracked": {
+        "name": "Monitorati"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Scadenze"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Segna come fatto",
+      "description": "Un'attività fatta oggi o un consumabile sostituito: viene premuto il pulsante di reset del dispositivo, se presente.",
+      "fields": {
+        "item": {
+          "name": "Elemento",
+          "description": "Il sensore di un consumabile (sensor.…) o un'attività (task:…), come nel pannello."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Aggiungi un'attività",
+      "description": "Un'attività manuale ripetuta ogni N giorni, settimane o mesi.",
+      "fields": {
+        "name": {
+          "name": "Nome",
+          "description": "Cosa fare."
+        },
+        "every": {
+          "name": "Ogni",
+          "description": "Quanti giorni, settimane o mesi tra due volte."
+        },
+        "unit": {
+          "name": "Unità",
+          "description": "Giorni, settimane o mesi."
+        },
+        "last_done": {
+          "name": "Ultima volta",
+          "description": "Oggi se vuoto."
+        },
+        "category": {
+          "name": "Categoria",
+          "description": "Raggruppa l'attività nel pannello."
+        },
+        "icon": {
+          "name": "Icona",
+          "description": "Mostrata accanto all'attività."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Rimuovi un'attività",
+      "description": "Elimina un'attività manuale e i suoi promemoria.",
+      "fields": {
+        "item": {
+          "name": "Attività",
+          "description": "L'attività (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Giorni",
+        "weeks": "Settimane",
+        "months": "Mesi"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Aspirapolvere",
+        "purifier": "Purificatore d'aria",
+        "printer": "Stampante",
+        "safety": "Sicurezza",
+        "home": "Casa",
+        "garden": "Giardino",
+        "vehicle": "Veicolo",
+        "other": "Altro"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance non è configurato."
+    },
+    "unknown_item": {
+      "message": "Elemento sconosciuto: {item}."
+    }
+  }
+}

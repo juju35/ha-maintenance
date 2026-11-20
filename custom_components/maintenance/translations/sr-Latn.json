@@ -1,0 +1,131 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Održavanje",
+        "description": "Pratite potrošni materijal uređaja (filtere, četke, mastilo…) i ponavljajuće zadatke. Ništa za popunjavanje: potrošni materijal se pronalazi sam, a zadaci se dodaju iz panela Maintenance."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Maintenance je već podešen."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Održavanje",
+        "data": {
+          "soon_days": "Uskoro u roku od",
+          "soon_percent": "Potrošni materijal nizak na",
+          "reminder_time": "Dnevni podsetnik u",
+          "notify_service": "Akcija podsetnika"
+        },
+        "data_description": {
+          "soon_days": "Zadatak (ili potrošni materijal sadašnjim tempom) koji dospeva u toliko dana računa se kao uskoro.",
+          "soon_percent": "Potrošni materijal na ovom procentu ili ispod računa se kao uskoro.",
+          "reminder_time": "Jednom dnevno se šalje ono što je zakasnilo ili dolazi uskoro, svaka stavka jednom.",
+          "notify_service": "Na primer notify.mobile_app_phone ili notify_hub.send; prazno za bez podsetnika."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Kasni"
+      },
+      "soon": {
+        "name": "Uskoro"
+      },
+      "tracked": {
+        "name": "Praćeno"
+      }
+    },
+    "calendar": {
+      "due": {
+        "name": "Rokovi"
+      }
+    }
+  },
+  "services": {
+    "done": {
+      "name": "Označi kao urađeno",
+      "description": "Zadatak urađen danas ili zamenjen potrošni materijal: pritiska se dugme za resetovanje uređaja ako postoji.",
+      "fields": {
+        "item": {
+          "name": "Stavka",
+          "description": "Senzor potrošnog materijala (sensor.…) ili zadatak (task:…), kao u panelu."
+        }
+      }
+    },
+    "add_task": {
+      "name": "Dodaj zadatak",
+      "description": "Ručni zadatak koji se ponavlja svakih N dana, nedelja ili meseci.",
+      "fields": {
+        "name": {
+          "name": "Naziv",
+          "description": "Šta treba uraditi."
+        },
+        "every": {
+          "name": "Svakih",
+          "description": "Koliko dana, nedelja ili meseci između dva puta."
+        },
+        "unit": {
+          "name": "Jedinica",
+          "description": "Dani, nedelje ili meseci."
+        },
+        "last_done": {
+          "name": "Poslednji put",
+          "description": "Danas ako je prazno."
+        },
+        "category": {
+          "name": "Kategorija",
+          "description": "Grupiše zadatak u panelu."
+        },
+        "icon": {
+          "name": "Ikonica",
+          "description": "Prikazuje se pored zadatka."
+        }
+      }
+    },
+    "remove_task": {
+      "name": "Ukloni zadatak",
+      "description": "Briše ručni zadatak i njegove podsetnike.",
+      "fields": {
+        "item": {
+          "name": "Zadatak",
+          "description": "Zadatak (task:…)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit": {
+      "options": {
+        "days": "Dani",
+        "weeks": "Nedelje",
+        "months": "Meseci"
+      }
+    },
+    "category": {
+      "options": {
+        "vacuum": "Usisivač",
+        "purifier": "Prečišćivač vazduha",
+        "printer": "Štampač",
+        "safety": "Bezbednost",
+        "home": "Kuća",
+        "garden": "Bašta",
+        "vehicle": "Vozilo",
+        "other": "Ostalo"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Maintenance nije podešen."
+    },
+    "unknown_item": {
+      "message": "Nepoznata stavka: {item}."
+    }
+  }
+}
