@@ -6,7 +6,7 @@
  * illustrated header across the whole width, the tabs under it, the current tab in the address.
  * https://github.com/juju35/ha-maintenance
  */
-var MAINTENANCE_PANEL_VERSION = '0.4.0';
+var MAINTENANCE_PANEL_VERSION = '0.4.1';
 
 var MT_PANEL_I18N = {
   en: { title: "Maintenance", tracked_n: "{n} tracked", overdue_n: "{n} overdue", all_good: "All up to date", next: "Next: {name}, {when}", attention: "Needs attention", done: "Done", overdue_days: "Overdue by {n} d", due_today: "Due today", in_days: "In {n} d", in_months: "In {n} months", left_pct: "{p} % left", left_hours: "≈ {n} h", left_days: "≈ {n} days", empty: "Empty", every_days: "every {n} d", every_weeks: "every {n} wk", every_months: "every {n} mo", manual: "Manual", nothing: "Nothing tracked yet", not_found: "Maintenance is not set up", card_name: "Maintenance Card", card_desc: "Filters, brushes, ink and chores: what is overdue, what comes next", ed_entity: "Sensor", ed_title: "Title", ed_rows: "Rows", ed_language: "Language", c_overdue: "Overdue", c_soon: "Soon", c_ok: "Up to date", c_done_month: "Done this month", cat_vacuum: "Vacuum", cat_purifier: "Air purifier", cat_printer: "Printer", cat_safety: "Safety", cat_home: "Home", cat_garden: "Garden", cat_vehicle: "Vehicle", cat_other: "Other", tab_due: "Due", tab_calendar: "Calendar", tab_history: "History", tab_settings: "Settings", subtitle: "{n} tracked · {a} found automatically · {b} manual tasks", soon_hint: "≤ {d} d or ≤ {p} %", f_all: "All", f_consumables: "Consumables", f_tasks: "Tasks", g_todo: "To do", g_ok: "Up to date", add_task: "Add a task", edit: "Edit", delete: "Delete", save: "Save", cancel: "Cancel", f_name: "Name", f_every: "Every", f_unit: "Unit", u_days: "days", u_weeks: "weeks", u_months: "months", f_category: "Category", f_last: "Last done", cal_next30: "Next 30 days", today: "Today", cal_list: "Coming up", no_due: "Nothing due in the next 30 days", h_empty: "Nothing done yet", h_by: "by {who}", s_thresholds: "When is it soon", s_soon_days: "Days before a due date", s_soon_percent: "Consumable low at (%)", s_reminders: "Reminders", s_time: "Daily reminder at", s_service: "Send through", s_none: "No reminder", remind_now: "Send the reminder now", s_found: "Consumables found", s_found_text: "Uncheck a sensor to stop tracking it.", saved: "Saved", sent: "Sent", error: "Error", soon_n: "{n} due soon", ed_illustration_theme: "Illustration", th_auto: "Automatic (theme)", th_day: "Day", th_night: "Night", f_icon: "Icon", unavailable: "Unavailable", s_panel: "Panel", settings_hide_header: "Hide the top bar", settings_hide_header_hint: "The illustrated header above the tabs; the tabs stay, and on a phone the menu button moves beside them.", hide_header_off: "No", hide_header_all: "For everyone", hide_header_non_admin: "For non-admins" },
@@ -35,6 +35,9 @@ var MT_PANEL_I18N = {
 
 var MTP_TABS = ['due', 'calendar', 'history', 'settings'];
 var MTP_CATEGORIES = ['vacuum', 'purifier', 'printer', 'safety', 'home', 'garden', 'vehicle', 'other'];
+// A device's icon, from its category (the manual tasks get their own).
+var MTP_DEVICE_ICONS = { vacuum: 'mdi:robot-vacuum', purifier: 'mdi:air-purifier', printer: 'mdi:printer', safety: 'mdi:shield-home', home: 'mdi:home', garden: 'mdi:flower', vehicle: 'mdi:car', other: 'mdi:devices', task: 'mdi:clipboard-check-outline' };
+var mtpDeviceIcon = (item) => MTP_DEVICE_ICONS[item.kind === 'task' ? 'task' : item.category] || MTP_DEVICE_ICONS.other;
 var MTP_TONE = { overdue: 'bad', soon: 'warn', ok: 'ok', unavailable: 'idle' };
 var MTP_BLANK = { name: '', every: 1, unit: 'months', category: 'home' };
 
@@ -334,7 +337,7 @@ class MaintenancePanel extends HTMLElement {
     ].join('');
     return `<div class="row r-${tone}" data-key="${mtpEsc(item.id)}"><span class="dot"><ha-icon icon="${mtpEsc(item.icon || 'mdi:wrench')}"></ha-icon></span>
       <span class="txt"><span class="nm">${mtpEsc(item.short || item.name)}</span><span class="sub">${mtpEsc(this._line(item, t))}</span></span>
-      <span class="tag" title="${mtpEsc(item.source || '')}">${mtpEsc(tag)}</span><span class="acts">${actions}</span></div>`;
+      <span class="tag" title="${mtpEsc(item.source || '')}"><ha-icon icon="${mtpEsc(mtpDeviceIcon(item))}"></ha-icon>${mtpEsc(tag)}</span><span class="acts">${actions}</span></div>`;
   }
 
   // What is up to date, by device (the manual tasks together): a card each, a compact line and a gauge per item.
@@ -342,14 +345,14 @@ class MaintenancePanel extends HTMLElement {
     var groups = new Map();
     for (var i of list) {
       var key = i.kind === 'task' ? '\u0000tasks' : i.device || `\u0000${i.source || 'other'}`;
-      if (!groups.has(key)) groups.set(key, { key, name: i.kind === 'task' ? t.f_tasks : i.device || i.source || t.cat_other, tag: i.kind === 'task' ? '' : i.source, items: [] });
+      if (!groups.has(key)) groups.set(key, { key, name: i.kind === 'task' ? t.f_tasks : i.device || i.source || t.cat_other, tag: i.kind === 'task' ? '' : i.source, icon: mtpDeviceIcon(i), items: [] });
       groups.get(key).items.push(i);
     }
     var gauge = (i) => (i.percent != null ? `<span class="gauge"><span style="width:${Math.max(2, Math.min(100, i.percent))}%"></span></span>` : '');
     var line = (i) => `<div class="cline" data-key="${mtpEsc(i.id)}"><span class="dot"><ha-icon icon="${mtpEsc(i.icon || 'mdi:wrench')}"></ha-icon></span>
       <span class="txt"><span class="nm">${mtpEsc(i.short || i.name)}</span><span class="sub">${mtpEsc(this._line(i, t))}</span>${gauge(i)}</span>
       ${i.kind === 'task' ? `<span class="acts"><button class="btn ghost" type="button" data-act="edit" data-item="${mtpEsc(i.id)}">${mtpEsc(t.edit)}</button></span>` : ''}</div>`;
-    return `<div class="dgrid">${[...groups.values()].map((g) => `<section class="dcard" data-key="dev-${mtpEsc(g.key)}"><div class="dhead"><span class="gname">${mtpEsc(g.name)}</span>
+    return `<div class="dgrid">${[...groups.values()].map((g) => `<section class="dcard" data-key="dev-${mtpEsc(g.key)}"><div class="dhead"><span class="dico"><ha-icon icon="${mtpEsc(g.icon)}"></ha-icon></span><span class="gname">${mtpEsc(g.name)}</span>
       ${g.tag && g.tag !== g.name ? `<span class="tag">${mtpEsc(g.tag)}</span>` : ''}<span class="grow"></span><span class="gcount">${g.items.length}</span></div>${g.items.map(line).join('')}</section>`).join('')}</div>`;
   }
 
@@ -522,6 +525,9 @@ class MaintenancePanel extends HTMLElement {
       .chip { font: inherit; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 999px; cursor: pointer; color: var(--primary-text-color);
               border: 1px solid var(--divider-color, rgba(127,127,127,.35)); background: var(--card-background-color, #fff); }
       .chip.on { color: #0f766e; border-color: #5eead4; background: #ccfbf1; } .night .chip.on { color: #99f6e4; background: #134e4a; border-color: #2c6b66; }
+      .dico { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; --mdc-icon-size: 18px;
+              color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+      .row .tag { display: inline-flex; align-items: center; gap: 5px; } .row .tag ha-icon { --mdc-icon-size: 14px; }
       .dgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; align-items: start; }
       .dcard { background: var(--card-background-color, #fff); border-radius: 14px; box-shadow: var(--ha-card-box-shadow, 0 1px 3px rgba(0,0,0,.08)); overflow: hidden; }
       .dhead { display: flex; align-items: center; gap: 8px; padding: 10px 14px; font-size: 14px; font-weight: 700; border-bottom: 1px solid var(--divider-color, rgba(127,127,127,.18)); }
