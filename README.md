@@ -12,6 +12,14 @@
   <img src="https://raw.githubusercontent.com/juju35/ha-maintenance/main/custom_components/maintenance/brand/icon.png" alt="Maintenance" width="120">
 </p>
 
+<p align="center">
+  <a href="https://www.home-assistant.io/integrations/roborock/"><img src="https://raw.githubusercontent.com/juju35/ha-maintenance/main/images/roborock.svg" alt="Roborock" width="48"></a>&nbsp;&nbsp;
+  <a href="https://www.home-assistant.io/integrations/xiaomi_miio/"><img src="https://raw.githubusercontent.com/juju35/ha-maintenance/main/images/xiaomi_miio.png" alt="Xiaomi Miio" width="48"></a>&nbsp;&nbsp;
+  <a href="https://www.home-assistant.io/integrations/ecovacs/"><img src="https://raw.githubusercontent.com/juju35/ha-maintenance/main/images/ecovacs.png" alt="Ecovacs" width="48"></a>&nbsp;&nbsp;
+  <a href="https://www.home-assistant.io/integrations/homekit_controller/"><img src="https://raw.githubusercontent.com/juju35/ha-maintenance/main/images/homekit.png" alt="HomeKit Device" width="48"></a>&nbsp;&nbsp;
+  <a href="https://www.home-assistant.io/integrations/brother/"><img src="https://raw.githubusercontent.com/juju35/ha-maintenance/main/images/brother.svg" alt="Brother" height="24"></a>
+</p>
+
 Home Assistant integration for the **household maintenance**: the consumables of your devices — vacuum brushes and filters, purifier filters, printer ink and toner — are **found by themselves** among their sensors, and your **recurring chores** (descaling, smoke detector tests, boiler service…) are added in a couple of clicks. Everything gets a due date, the most urgent first, with a daily reminder, a calendar, a history, a sidebar **panel** and a Lovelace **card**.
 
 [![Open your Home Assistant instance and open a repository inside the Marketplace.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=juju35&repository=ha-maintenance&category=integration)
@@ -31,7 +39,7 @@ Home Assistant integration for the **household maintenance**: the consumables of
 - **Statuses** — overdue, soon (within 14 days or at 15 % by default) and up to date, most urgent first
 - **Daily reminder** of what became overdue or soon, each item once, through any notify action or [Notify Hub](https://github.com/juju35/ha-notify-hub)
 - **Calendar** entity with the due dates (and the next occurrences of the tasks)
-- **Panel** (administrators) — Due (filters, Done, the task editor), Calendar (the next 30 days), History, Settings (thresholds, reminders, the consumables tracked); a red badge on the sidebar entry while something is overdue
+- **Panel** (administrators) — Due (filters, Done, the task editor with name, interval, category, last done and icon), Calendar (the next 30 days), History, Settings (thresholds, reminders, the consumables tracked); a red badge on the sidebar entry while something is overdue
 - **Card** — the items most urgent first with the Done button, under an animated illustrated header, light and dark
 - **Sensors** — overdue, due soon, tracked
 - 22 languages
@@ -122,7 +130,7 @@ One device, **Maintenance**, with (named in Home Assistant's language):
 type: custom:maintenance-card
 ```
 
-Every option is in the visual editor.
+Every option is in the visual editor (the illustration theme included).
 
 | Option | Default | Description |
 |---|---|---|
@@ -164,11 +172,12 @@ pip install -r requirements_test.txt && pytest
 npm install --no-save acorn@8.19.0 && node scripts/split-frontend.mjs --check   # the translation split the release makes
 pip install playwright pillow && playwright install chromium
 python scripts/screenshots.py    # renders the stills and the GIF (needs ffmpeg) into screenshots/
+python scripts/layout_check.py   # the card and the panel patch their DOM in place: no rebuild, no height jump
 ```
 
 ### Releasing
 
-1. Bump the version in `custom_components/maintenance/manifest.json`
+1. Bump the version, together, in `custom_components/maintenance/manifest.json`, `const.py` (`VERSION`), and the `MAINTENANCE_PANEL_VERSION` / `MAINTENANCE_CARD_VERSION` constants of the panel and the card (the **Version consistency** check compares them)
 2. Add a `## <version>` section at the top of [CHANGELOG.md](https://github.com/juju35/ha-maintenance/blob/main/CHANGELOG.md)
 3. Push to `main`: the **Release** workflow creates the tag and the GitHub release with the changelog section as notes
 
