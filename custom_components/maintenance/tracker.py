@@ -1,7 +1,10 @@
 """The maintenance tracker: consumables found among the device sensors, manual tasks, their due dates and history.
 
 Consumables are found by themselves: a numeric sensor whose name says what it is (filter, brush, ink, toner, mop…)
-and whose unit says how much is left (a percentage, or a time left such as Roborock's brush hours). One sample a day
+and whose unit says how much is left (a percentage, or a time left such as Roborock's brush hours), or a problem
+binary sensor that says a tank or a liquid needs seeing to (clean water empty, dirty water full, cleaning fluid…).
+The words come from the entity's ID, its name and its translation key: the key stays English when Home Assistant
+runs in another language and the entity IDs are made from the translated names. One sample a day
 gives how fast it wears, hence an estimated number of days left. Marking it done presses the device's own reset
 button when it has one (Roborock, Xiaomi…), and keeps a line in the history.
 
@@ -12,6 +15,7 @@ from __future__ import annotations
 
 import logging
 import re
+import unicodedata
 import uuid
 from collections.abc import Callable
 from datetime import date, datetime, time, timedelta
@@ -68,6 +72,7 @@ CONSUMABLES: tuple[tuple[str, str, str, float | None], ...] = (
     ("dust_bag", "vacuum", "mdi:delete-variant", None),
     ("sensor_dirty", "vacuum", "mdi:eye-outline", 30),
     ("sensor", "vacuum", "mdi:eye-outline", 30),
+    ("strainer", "vacuum", "mdi:filter-variant", 150),
     ("toner", "printer", "mdi:printer-3d-nozzle", None),
     ("ink", "printer", "mdi:water-outline", None),
     ("cartridge", "printer", "mdi:water-outline", None),
@@ -75,10 +80,24 @@ CONSUMABLES: tuple[tuple[str, str, str, float | None], ...] = (
     ("filter", "home", "mdi:air-filter", 150),
 )
 _STRONG = ("filter", "brush", "mop", "toner", "ink", "cartridge", "drum", "dust_bag", "sensor_dirty")
+# A problem binary sensor that says a tank or a liquid needs seeing to: what it is called and its icon.
+STATUS_CONSUMABLES: tuple[tuple[str, str], ...] = (
+    ("clean_water_box", "mdi:cup-water"),
+    ("clean_box", "mdi:cup-water"),
+    ("dirty_water_box", "mdi:water-opacity"),
+    ("dirty_box", "mdi:water-opacity"),
+    ("cleaning_fluid", "mdi:bottle-tonic-outline"),
+    ("clean_fluid", "mdi:bottle-tonic-outline"),
+    ("detergent", "mdi:bottle-tonic-outline"),
+    ("softener", "mdi:bottle-tonic-outline"),
+    ("water_shortage", "mdi:water-alert"),
+    ("dust_bin", "mdi:delete-variant"),
+    ("dust_bag", "mdi:delete-variant"),
+)
 _LEFT = ("left", "remaining", "life", "lifespan", "level", "time", "usage", "consumable")
 _NEVER = (
     "battery", "signal", "humidity", "temperature", "rssi", "pm2", "pm10", "voc", "co2", "water_level", "moisture",
-    "illuminance", "noise",
+    "illuminance", "noise", "drying", "attached",
 )  # fmt: skip
 _TIME_UNITS = {
     UnitOfTime.SECONDS: 1 / 3600,
@@ -119,7 +138,9 @@ def add_interval(start: date, every: int, unit: str) -> date:
 
 
 def _words(*parts: str | None) -> str:
-    return "_" + "_".join(_WORD.sub("_", (p or "").lower()).strip("_") for p in parts if p) + "_"
+    """The words of every part (accents dropped: « latérale » is latérale, not lat_rale) between underscores."""
+    plain = (unicodedata.normalize("NFKD", p).encode("ascii", "ignore").decode() for p in parts if p)
+    return "_" + "_".join(_WORD.sub("_", p.lower()).strip("_") for p in plain) + "_"
 
 
 class MaintenanceTracker:
@@ -210,7 +231,7 @@ class MaintenanceTracker:
         ignored = set(self.options.get(CONF_IGNORED) or [])
         entities, devices = er.async_get(self.hass), dr.async_get(self.hass)
         found: dict[str, dict[str, Any]] = {}
-        for state in self.hass.states.async_all("sensor"):
+        for state in self.hass.states.async_all(("sensor", "binary_sensor")):
             info = self._consumable(state, entities, devices)
             if info is not None:
                 info["ignored"] = state.entity_id in ignored
@@ -229,9 +250,15 @@ class MaintenanceTracker:
         entry = entities.async_get(state.entity_id)
         if entry is not None and entry.platform == DOMAIN:
             return None
-        words = _words(state.entity_id.split(".", 1)[1], state.attributes.get("friendly_name"))
+        words = _words(
+            state.entity_id.split(".", 1)[1],
+            state.attributes.get("friendly_name"),
+            entry.translation_key if entry else None,
+        )
         if any(f"_{w}" in words for w in _NEVER):
             return None
+        if state.domain == "binary_sensor":
+            return self._status_consumable(state, entry, entities, devices, words)
         match = next((c for c in CONSUMABLES if f"_{c[0]}_" in words or f"_{c[0]}s_" in words), None)
         if match is None:
             return None
@@ -261,6 +288,27 @@ class MaintenanceTracker:
             "reset": self._reset_button(entry, entities, key),
         }
 
+    def _status_consumable(self, state, entry, entities, devices, words: str) -> dict[str, Any] | None:
+        """A tank or a liquid that only says whether it needs seeing to (on: a problem), on a device."""
+        if state.attributes.get("device_class") not in ("problem", None) or entry is None or not entry.device_id:
+            return None
+        match = next((c for c in STATUS_CONSUMABLES if f"_{c[0]}_" in words), None)
+        if match is None:
+            return None
+        key, icon = match
+        device = devices.async_get(entry.device_id)
+        return {
+            "key": key,
+            "category": self._device_category(entry, entities, "home", key),
+            "icon": icon,
+            "unit": None,
+            "lifetime": None,
+            "binary": True,
+            "source": self._source(entry),
+            "device": (device.name_by_user or device.name) if device else None,
+            "reset": None,
+        }
+
     @staticmethod
     def _device_category(entry: er.RegistryEntry | None, entities: er.EntityRegistry, default: str, key: str) -> str:
         if key in ("toner", "ink", "cartridge", "drum"):
@@ -280,7 +328,7 @@ class MaintenanceTracker:
         if entry is None or entry.device_id is None:
             return None
         for other in er.async_entries_for_device(entities, entry.device_id):
-            words = _words(other.entity_id.split(".", 1)[1], other.original_name)
+            words = _words(other.entity_id.split(".", 1)[1], other.original_name, other.translation_key)
             if other.domain == "button" and "_reset_" in words and f"_{key}" in words:
                 return other.entity_id
         return None
@@ -413,6 +461,8 @@ class MaintenanceTracker:
         }
 
     def _consumable_item(self, entity_id: str, info: dict[str, Any], today: date) -> dict[str, Any] | None:
+        if info.get("binary"):
+            return self._status_item(entity_id, info)
         value = self._value(entity_id)
         if value is None:
             return None
@@ -448,6 +498,32 @@ class MaintenanceTracker:
             "ignored": info["ignored"],
         }
 
+    def _status_item(self, entity_id: str, info: dict[str, Any]) -> dict[str, Any] | None:
+        """A tank or a liquid: overdue while its problem sensor is on, up to date otherwise."""
+        state = self.hass.states.get(entity_id)
+        if state is None or state.state not in ("on", "off"):
+            return None
+        problem = state.state == "on"
+        return {
+            "id": entity_id,
+            "kind": KIND_CONSUMABLE,
+            "name": state.name,
+            "category": info["category"],
+            "icon": info["icon"],
+            "source": info["source"],
+            "entity_id": entity_id,
+            "unit": None,
+            "value": None,
+            "hours": None,
+            "percent": None,
+            "days_left": None,
+            "due": None,
+            "state": "problem" if problem else "ok",
+            "status": STATUS_OVERDUE if problem else STATUS_OK,
+            "can_reset": False,
+            "ignored": info["ignored"],
+        }
+
     def counts(self) -> dict[str, int]:
         items = self.items()
         month = dt_util.now().strftime("%Y-%m")
@@ -460,7 +536,7 @@ class MaintenanceTracker:
         """What the card shows (and the sensors' attributes carry)."""
         items = self.items()
         keep = ("id", "kind", "name", "category", "icon", "source", "percent", "hours", "days_left", "due", "status")
-        keep += ("every", "unit", "can_reset")
+        keep += ("every", "unit", "can_reset", "state")
         return {"counts": self.counts(), "items": [{k: i.get(k) for k in keep} for i in items[:limit]]}
 
     @property

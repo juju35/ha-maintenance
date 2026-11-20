@@ -24,7 +24,7 @@ Home Assistant integration for the **household maintenance**: the consumables of
 
 ## Features
 
-- **Consumables found automatically** — any sensor whose name says what it is (filter, brush, mop, ink, toner, cartridge, drum…) and whose unit says how much is left (a percentage, or a time left in hours); battery, signal and air-quality sensors are left out
+- **Consumables found automatically** — any sensor whose name says what it is (filter, brush, mop, ink, toner, cartridge, drum…) and whose unit says how much is left (a percentage, or a time left in hours), plus the problem binary sensors of tanks and liquids (clean water empty, dirty water full, cleaning fluid…); found from the entity's translation key too, so it works whatever the language Home Assistant runs in; battery, signal and air-quality sensors are left out
 - **Days left estimated** from one sample a day, so a filter at 12 % shows "≈ 18 days" at its current pace
 - **Done** presses the device's own **reset button** when it has one (Roborock, Xiaomi…), and keeps a line in the history
 - **Manual tasks** every N days, weeks or months, from the last time they were done, in categories (home, safety, garden, vehicle…)
@@ -40,7 +40,7 @@ Home Assistant integration for the **household maintenance**: the consumables of
 
 Maintenance reads the consumable sensors that other integrations create. It recognises, among others:
 
-- [Roborock](https://www.home-assistant.io/integrations/roborock/) — main brush, side brush, filter and sensors time left, with their reset buttons
+- [Roborock](https://www.home-assistant.io/integrations/roborock/) — main brush, side brush, filter, sensors and dock strainer time left, with their reset buttons; dock clean water, dirty water and cleaning fluid
 - [Xiaomi Miio](https://www.home-assistant.io/integrations/xiaomi_miio/) — vacuum consumables and purifier filter life
 - [Ecovacs](https://www.home-assistant.io/integrations/ecovacs/) — brushes and filter lifespan
 - [HomeKit Device](https://www.home-assistant.io/integrations/homekit_controller/) — purifier filter life level
