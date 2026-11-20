@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1 - 2026-11-21
+
+### Fixes
+
+- Panel: the devices have their icon (from their category; the manual tasks their own), in the head of each device card and in the device tag of the To do and Unavailable rows
+
 ## 0.4.0 - 2026-11-20
 
 ### Features
