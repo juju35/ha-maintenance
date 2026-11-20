@@ -6,7 +6,7 @@ from typing import Final
 
 DOMAIN: Final = "maintenance"
 TITLE: Final = "Maintenance"
-VERSION: Final = "0.1.0"
+VERSION: Final = "0.1.1"
 
 # Status of an item, most urgent first.
 STATUS_OVERDUE: Final = "overdue"

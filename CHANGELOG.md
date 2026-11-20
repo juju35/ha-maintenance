@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 - 2026-11-20
+
+### Fixes
+
+- The sidebar panel is now served at `/home-maintenance`: Home Assistant already uses `/maintenance`, so the panel was never added to the sidebar
+- The device consumables found at startup no longer update the calendar from a worker thread (Home Assistant thread-safety error in the log)
+
 ## 0.1.0 - 2026-11-20
 
 ### Features
