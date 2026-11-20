@@ -6,7 +6,7 @@
  * illustrated header across the whole width, the tabs under it, the current tab in the address.
  * https://github.com/juju35/ha-maintenance
  */
-var MAINTENANCE_PANEL_VERSION = '0.1.1';
+var MAINTENANCE_PANEL_VERSION = '0.1.2';
 
 var MT_PANEL_I18N = {
   en: { title: "Maintenance", tracked_n: "{n} tracked", overdue_n: "{n} overdue", all_good: "All up to date", next: "Next: {name}, {when}", done: "Done", overdue_days: "Overdue by {n} d", due_today: "Due today", in_days: "In {n} d", in_months: "In {n} months", left_pct: "{p} % left", left_hours: "≈ {n} h", left_days: "≈ {n} days", empty: "Empty", every_days: "every {n} d", every_weeks: "every {n} wk", every_months: "every {n} mo", manual: "Manual", nothing: "Nothing tracked yet", not_found: "Maintenance is not set up", card_name: "Maintenance Card", card_desc: "Filters, brushes, ink and chores: what is overdue, what comes next", ed_entity: "Sensor", ed_title: "Title", ed_rows: "Rows", ed_language: "Language", c_overdue: "Overdue", c_soon: "Soon", c_ok: "Up to date", c_done_month: "Done this month", cat_vacuum: "Vacuum", cat_purifier: "Air purifier", cat_printer: "Printer", cat_safety: "Safety", cat_home: "Home", cat_garden: "Garden", cat_vehicle: "Vehicle", cat_other: "Other", tab_due: "Due", tab_calendar: "Calendar", tab_history: "History", tab_settings: "Settings", subtitle: "{n} tracked · {a} found automatically · {b} manual tasks", soon_hint: "≤ {d} d or ≤ {p} %", f_all: "All", f_consumables: "Consumables", f_tasks: "Tasks", g_todo: "To do", g_ok: "Up to date", add_task: "Add a task", edit: "Edit", delete: "Delete", save: "Save", cancel: "Cancel", f_name: "Name", f_every: "Every", f_unit: "Unit", u_days: "days", u_weeks: "weeks", u_months: "months", f_category: "Category", f_last: "Last done", cal_next30: "Next 30 days", today: "Today", cal_list: "Coming up", no_due: "Nothing due in the next 30 days", h_empty: "Nothing done yet", h_by: "by {who}", s_thresholds: "When is it soon", s_soon_days: "Days before a due date", s_soon_percent: "Consumable low at (%)", s_reminders: "Reminders", s_time: "Daily reminder at", s_service: "Send through", s_none: "No reminder", remind_now: "Send the reminder now", s_found: "Consumables found", s_found_text: "Uncheck a sensor to stop tracking it.", saved: "Saved", sent: "Sent", error: "Error" },
@@ -374,10 +374,10 @@ class MaintenancePanel extends HTMLElement {
               --idle: var(--secondary-text-color, #727272); --accent: #0d9488; }
       .page { min-height: 100vh; background: var(--primary-background-color); color: var(--primary-text-color); }
       .page.tone-ok { --c: var(--accent); } .page.tone-warn { --c: var(--warn); } .page.tone-bad { --c: var(--bad); }
-      .top { position: relative; height: 110px; overflow: hidden; background: linear-gradient(#ccfbf1, #f0fdfa); }
+      .top { position: relative; height: 90px; overflow: hidden; background: linear-gradient(#ccfbf1, #f0fdfa); }
       .night .top { background: linear-gradient(#0c2626, #153838); }
       .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: #5eead4; } .night .ground { background: #2c6b66; }
-      .scene { position: absolute; right: 300px; bottom: 6px; height: 104px; width: auto; max-width: 40%; }
+      .scene { position: absolute; right: 300px; bottom: 6px; height: 84px; width: auto; max-width: 40%; }
       @media (max-width: 900px) { .scene { right: 80px; opacity: .35; } }
       .board { fill: #fdf6e3; stroke: #e7d8b1; stroke-width: 2; } .holes circle { fill: #d6c49a; }
       .night .board { fill: #2b3a3a; stroke: #3f5656; } .night .holes circle { fill: #4f6a6a; }
@@ -391,7 +391,7 @@ class MaintenancePanel extends HTMLElement {
       @keyframes mtp-spin { to { transform: rotate(360deg); } }
       @keyframes mtp-turn { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-24deg); } }
       @media (prefers-reduced-motion: reduce) { .gear, .wrench.busy { animation: none; } }
-      .bar { position: absolute; left: 24px; right: 24px; top: 26px; display: flex; align-items: center; gap: 12px; }
+      .bar { position: absolute; left: 24px; right: 24px; top: 0; bottom: 6px; display: flex; align-items: center; gap: 12px; }
       .menu { color: #1f2937; } .night .menu { color: #f3f4f6; }
       .ico { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--c); --mdc-icon-size: 22px;
              background: color-mix(in srgb, var(--c) 18%, #fff); }
