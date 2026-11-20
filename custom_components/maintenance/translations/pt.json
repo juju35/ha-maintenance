@@ -18,13 +18,15 @@
           "soon_days": "Em breve dentro de",
           "soon_percent": "Consumível baixo a",
           "reminder_time": "Lembrete diário às",
-          "notify_service": "Ação de lembrete"
+          "notify_service": "Ação de lembrete",
+          "hide_header": "Ocultar a barra superior"
         },
         "data_description": {
           "soon_days": "Uma tarefa (ou um consumível ao ritmo atual) que vence dentro destes dias conta como em breve.",
           "soon_percent": "Um consumível nesta percentagem ou abaixo conta como em breve.",
           "reminder_time": "Uma vez por dia é enviado o que ficou em atraso ou em breve, cada item uma vez.",
-          "notify_service": "Por exemplo notify.mobile_app_phone ou notify_hub.send; vazio para nenhum lembrete."
+          "notify_service": "Por exemplo notify.mobile_app_phone ou notify_hub.send; vazio para nenhum lembrete.",
+          "hide_header": "O cabeçalho ilustrado acima dos separadores; os separadores ficam e, no telemóvel, o botão de menu passa para junto deles."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Jardim",
         "vehicle": "Veículo",
         "other": "Outro"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "Não",
+        "all": "Para todos",
+        "non_admin": "Para não administradores"
       }
     }
   },

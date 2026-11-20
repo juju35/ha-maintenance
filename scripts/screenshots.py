@@ -85,15 +85,17 @@ ITEMS = [
     _consumable("sensor.bedroom_purifier_filter", "Purifier filter — Bedroom", "mdi:air-filter", "purifier", "HomeKit", "ok", 71),
     _task("t3", "Boiler and ventilation service", "mdi:wrench", "home", "ok", 214, 12, "months"),
     _task("t4", "Clean the gutters", "mdi:leaf", "garden", "ok", 96, 6, "months"),
+    _consumable("sensor.vacuum_mop_left", "Mop — Vacuum", "mdi:water", "vacuum", "Roborock", "unavailable"),
 ]  # fmt: skip
 CALM = [
     {**i, "status": "ok", "days_left": abs(i["days_left"]) + 20 if i["days_left"] is not None else None}
     for i in ITEMS[4:]
+    if i["status"] != "unavailable"
 ]
 
 
 def counts(items):
-    out = {s: sum(i["status"] == s for i in items) for s in ("overdue", "soon", "ok")}
+    out = {s: sum(i["status"] == s for i in items) for s in ("overdue", "soon", "ok", "unavailable")}
     return {**out, "tracked": len(items), "done_month": 5}
 
 

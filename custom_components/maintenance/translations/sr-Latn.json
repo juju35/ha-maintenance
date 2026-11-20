@@ -18,13 +18,15 @@
           "soon_days": "Uskoro u roku od",
           "soon_percent": "Potrošni materijal nizak na",
           "reminder_time": "Dnevni podsetnik u",
-          "notify_service": "Akcija podsetnika"
+          "notify_service": "Akcija podsetnika",
+          "hide_header": "Sakrij gornju traku"
         },
         "data_description": {
           "soon_days": "Zadatak (ili potrošni materijal sadašnjim tempom) koji dospeva u toliko dana računa se kao uskoro.",
           "soon_percent": "Potrošni materijal na ovom procentu ili ispod računa se kao uskoro.",
           "reminder_time": "Jednom dnevno se šalje ono što je zakasnilo ili dolazi uskoro, svaka stavka jednom.",
-          "notify_service": "Na primer notify.mobile_app_phone ili notify_hub.send; prazno za bez podsetnika."
+          "notify_service": "Na primer notify.mobile_app_phone ili notify_hub.send; prazno za bez podsetnika.",
+          "hide_header": "Ilustrovano zaglavlje iznad kartica; kartice ostaju, a na telefonu dugme menija prelazi pored njih."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Bašta",
         "vehicle": "Vozilo",
         "other": "Ostalo"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "Ne",
+        "all": "Za sve",
+        "non_admin": "Za korisnike koji nisu administratori"
       }
     }
   },

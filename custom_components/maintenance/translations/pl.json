@@ -18,13 +18,15 @@
           "soon_days": "Wkrótce w ciągu",
           "soon_percent": "Niski poziom materiału przy",
           "reminder_time": "Codzienne przypomnienie o",
-          "notify_service": "Akcja przypomnienia"
+          "notify_service": "Akcja przypomnienia",
+          "hide_header": "Ukryj górny pasek"
         },
         "data_description": {
           "soon_days": "Zadanie (lub materiał w obecnym tempie) z terminem w ciągu tylu dni liczy się jako wkrótce.",
           "soon_percent": "Materiał na tym poziomie procentowym lub niżej liczy się jako wkrótce.",
           "reminder_time": "Raz dziennie wysyłane jest to, co stało się zaległe lub bliskie, każdy element raz.",
-          "notify_service": "Na przykład notify.mobile_app_phone lub notify_hub.send; puste, aby nie przypominać."
+          "notify_service": "Na przykład notify.mobile_app_phone lub notify_hub.send; puste, aby nie przypominać.",
+          "hide_header": "Ilustrowany nagłówek nad kartami; karty zostają, a na telefonie przycisk menu przechodzi obok nich."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Ogród",
         "vehicle": "Pojazd",
         "other": "Inne"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "Nie",
+        "all": "Dla wszystkich",
+        "non_admin": "Dla nie-administratorów"
       }
     }
   },

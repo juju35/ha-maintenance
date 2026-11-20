@@ -18,13 +18,15 @@
           "soon_days": "Bald fällig innerhalb von",
           "soon_percent": "Verbrauchsmaterial niedrig bei",
           "reminder_time": "Tägliche Erinnerung um",
-          "notify_service": "Erinnerungsaktion"
+          "notify_service": "Erinnerungsaktion",
+          "hide_header": "Obere Leiste ausblenden"
         },
         "data_description": {
           "soon_days": "Eine Aufgabe (oder ein Verbrauchsmaterial im aktuellen Tempo), die in so vielen Tagen fällig ist, gilt als bald.",
           "soon_percent": "Ein Verbrauchsmaterial bei oder unter diesem Prozentsatz gilt als bald.",
           "reminder_time": "Einmal täglich wird gesendet, was überfällig oder bald fällig wurde, jedes Element einmal.",
-          "notify_service": "Zum Beispiel notify.mobile_app_phone oder notify_hub.send; leer lassen für keine Erinnerung."
+          "notify_service": "Zum Beispiel notify.mobile_app_phone oder notify_hub.send; leer lassen für keine Erinnerung.",
+          "hide_header": "Der illustrierte Kopfbereich über den Tabs; die Tabs bleiben, auf dem Telefon rückt die Menütaste neben sie."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Garten",
         "vehicle": "Fahrzeug",
         "other": "Sonstiges"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "Nein",
+        "all": "Für alle",
+        "non_admin": "Für Nicht-Admins"
       }
     }
   },

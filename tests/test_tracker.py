@@ -208,7 +208,7 @@ async def test_config_flow(hass: HomeAssistant):
         result["flow_id"], {"soon_days": 7, "soon_percent": 10, "reminder_time": "08:30:00", "notify_service": ""}
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert entry.options == {"soon_days": 7, "soon_percent": 10, "reminder_time": "08:30"}
+    assert entry.options == {"soon_days": 7, "soon_percent": 10, "reminder_time": "08:30", "hide_header": "off"}
     again = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})
     assert again["type"] is FlowResultType.ABORT
 
@@ -331,3 +331,29 @@ async def test_card_resource(hass: HomeAssistant):
     assert len(resources.items) == 1
     hass.data["lovelace"] = {"resource_mode": "yaml", "resources": resources}
     assert not await panel._async_register_resource(hass, f"{url}?v=9.9.9")
+
+
+async def test_unavailable_consumable_greyed(hass: HomeAssistant, tracker):
+    """An unavailable consumable stays listed, last, with no due date, never counted nor reminded."""
+    calls = async_mock_service(hass, "notify", "phone")
+    hass.config_entries.async_update_entry(
+        tracker.entry, options={**tracker.entry.options, "notify_service": "notify.phone"}
+    )
+    await hass.async_block_till_done()
+    hass.states.async_set("sensor.purifier_filter_life_level", "unavailable", {"unit_of_measurement": "%"})
+    await hass.async_block_till_done()
+    item = _item(tracker, "sensor.purifier_filter_life_level")
+    assert (item["status"], item["percent"], item["due"]) == ("unavailable", None, None)
+    assert tracker.items()[-1]["id"] == "sensor.purifier_filter_life_level"
+    counts = tracker.counts()
+    assert (counts["soon"], counts["unavailable"], counts["tracked"]) == (0, 1, 3)
+    assert await tracker.async_remind_now() == 1
+    assert "purifier" not in calls[0].data["message"].lower()
+
+
+async def test_hide_header_option(hass: HomeAssistant, tracker, hass_ws_client):
+    client = await hass_ws_client(hass)
+    await client.send_json_auto_id({"type": f"{DOMAIN}/save", "options": {"hide_header": "all"}})
+    assert (await client.receive_json())["result"]["options"]["hide_header"] == "all"
+    await client.send_json_auto_id({"type": f"{DOMAIN}/save", "options": {"hide_header": "sometimes"}})
+    assert not (await client.receive_json())["success"]

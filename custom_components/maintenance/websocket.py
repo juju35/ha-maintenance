@@ -12,6 +12,7 @@ from homeassistant.helpers import config_validation as cv
 
 from .const import (
     CATEGORIES,
+    CONF_HIDE_HEADER,
     CONF_IGNORED,
     CONF_NOTIFY_SERVICE,
     CONF_REMINDER_TIME,
@@ -19,6 +20,7 @@ from .const import (
     CONF_SOON_PERCENT,
     DEFAULT_REMINDER_TIME,
     DOMAIN,
+    HIDE_HEADER_CHOICES,
     UNITS,
     VERSION,
 )
@@ -31,6 +33,7 @@ OPTION_SCHEMA = vol.Schema(
         vol.Optional(CONF_REMINDER_TIME): str,
         vol.Optional(CONF_NOTIFY_SERVICE): vol.Any(None, str),
         vol.Optional(CONF_IGNORED): [str],
+        vol.Optional(CONF_HIDE_HEADER): vol.In(HIDE_HEADER_CHOICES),
     }
 )
 TASK_SCHEMA = vol.Schema(

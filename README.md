@@ -36,10 +36,10 @@ Home Assistant integration for the **household maintenance**: the consumables of
 - **Days left estimated** from one sample a day, so a filter at 12 % shows "≈ 18 days" at its current pace
 - **Done** presses the device's own **reset button** when it has one (Roborock, Xiaomi…), and keeps a line in the history
 - **Manual tasks** every N days, weeks or months, from the last time they were done, in categories (home, safety, garden, vehicle…)
-- **Statuses** — overdue, soon (within 14 days or at 15 % by default) and up to date, most urgent first
+- **Statuses** — overdue, soon (within 14 days or at 15 % by default) and up to date, most urgent first; a consumable whose sensor is unavailable stays listed, greyed out, last (never counted nor reminded)
 - **Daily reminder** of what became overdue or soon, each item once, through any notify action or [Notify Hub](https://github.com/juju35/ha-notify-hub)
 - **Calendar** entity with the due dates (and the next occurrences of the tasks)
-- **Panel** (administrators) — Due (filters, Done, the task editor with name, interval, category, last done and icon), Calendar (the next 30 days), History, Settings (thresholds, reminders, the consumables tracked); a red badge on the sidebar entry while something is overdue
+- **Panel** (administrators) — Due (filters, Done, the task editor with name, interval, category, last done and icon), Calendar (the next 30 days), History, Settings (thresholds, reminders, the consumables tracked); a red badge on the sidebar entry while something is overdue; the illustrated top bar can be hidden (for everyone or for non-admins), the tabs stay
 - **Card** — the items most urgent first with the Done button, under an animated illustrated header, light and dark
 - **Sensors** — overdue, due soon, tracked
 - 22 languages
@@ -90,7 +90,7 @@ Copy `custom_components/maintenance/` to `/config/custom_components/maintenance/
 
 ### Integration
 
-**Settings → Devices & services → Add integration → Maintenance**. One instance, nothing to fill in. The **Maintenance** panel appears in the sidebar (administrators); the thresholds and the reminder can also be changed from the integration's **Configure** button.
+**Settings → Devices & services → Add integration → Maintenance**. One instance, nothing to fill in. The **Maintenance** panel appears in the sidebar (administrators); the thresholds, the reminder and **Hide the top bar** (`hide_header`: no / for everyone / for non-admins) can also be changed from the integration's **Configure** button or the panel's Settings tab.
 
 ### Actions
 

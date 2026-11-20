@@ -7,12 +7,14 @@
 - Panel: the task editor has an **Icon** field (`mdi:…`), like the `add_task` action
 - Card: the illustration theme (`auto` / `day` / `night`) is in the visual editor
 - Card and panel: the status pill also says how many items are due soon (it said "All up to date" in amber)
+- Panel: option **Hide the top bar** (`hide_header`: no / for everyone / for non-admins), as on the other ha-* panels — the tabs stay, with the menu button and the round button beside them; in the options and the Settings tab
+- Consumables whose sensor is unavailable stay in the card and the panel, greyed out and last, instead of vanishing (never counted as overdue/soon, never reminded)
 
 ### Fixes
 
 - Card: a state update no longer rebuilds the card — it is patched in place, so the dashboard no longer jumps (the re-created card had no height for a frame) and the header animation no longer restarts; updates of other entities are ignored at once
 - Panel: no longer redrawn on every Home Assistant update — a field being typed in keeps its text and focus, and Save in the settings works at the first click
-- Panel: the status pill is always shown, at the title line; the card's pill sits at the right of the header and the source chip is hidden on narrow cards (~300 px)
+- Panel: the status pill is always shown, beside the title, and the illustration sits at the right of the top bar, just left of the round button, like the other panels; the card's pill sits at the right of the header and the source chip is hidden on narrow cards (~300 px)
 - An impossible last-done date (e.g. 2026-13-45) or icon sent from the panel is refused: it broke the due date of every item
 - Task names are trimmed and limited to 80 characters in the `add_task` action too
 - No more "Unable to remove unknown job listener" error in the log when the options change after a start

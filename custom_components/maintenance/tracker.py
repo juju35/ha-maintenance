@@ -52,6 +52,7 @@ from .const import (
     STATUS_OK,
     STATUS_OVERDUE,
     STATUS_SOON,
+    STATUS_UNAVAILABLE,
     STATUSES,
     STORAGE_VERSION,
 )
@@ -395,7 +396,7 @@ class MaintenanceTracker:
             item = self._consumable_item(entity_id, info, today)
             if item is not None:
                 out.append(item)
-        rank = {s: i for i, s in enumerate(STATUSES)}
+        rank = {s: i for i, s in enumerate((*STATUSES, STATUS_UNAVAILABLE))}
         return sorted(out, key=lambda i: (rank[i["status"]], i["days_left"] if i["days_left"] is not None else 10**6))
 
     def _task_item(self, task: dict[str, Any], today: date) -> dict[str, Any]:
@@ -423,9 +424,16 @@ class MaintenanceTracker:
 
     def _consumable_item(self, entity_id: str, info: dict[str, Any], today: date) -> dict[str, Any] | None:
         value = self._value(entity_id)
-        if value is None:
-            return None
         state = self.hass.states.get(entity_id)
+        if value is None:
+            # Unavailable (or not a number for now): kept in the list, greyed out, rather than vanishing.
+            return {
+                "id": entity_id, "kind": KIND_CONSUMABLE, "category": info["category"], "icon": info["icon"],
+                "name": _SUFFIX.sub("", state.name if state else entity_id).strip(), "source": info["source"],
+                "entity_id": entity_id, "unit": info["unit"], "value": None, "hours": None, "percent": None,
+                "days_left": None, "due": None, "status": STATUS_UNAVAILABLE, "can_reset": info["reset"] is not None,
+                "ignored": info["ignored"],
+            }  # fmt: skip
         unit = info["unit"]
         if unit == "%":
             percent: float | None = value
@@ -461,6 +469,7 @@ class MaintenanceTracker:
         items = self.items() if items is None else items
         month = dt_util.now().strftime("%Y-%m")
         counts = {s: sum(i["status"] == s for i in items) for s in STATUSES}
+        counts[STATUS_UNAVAILABLE] = sum(i["status"] == STATUS_UNAVAILABLE for i in items)
         counts["tracked"] = len(items)
         counts["done_month"] = sum(h["time"][:7] == month for h in self._data["history"])
         return counts
@@ -511,7 +520,9 @@ class MaintenanceTracker:
         service = self.options.get(CONF_NOTIFY_SERVICE)
         notified: dict[str, str] = self._data["notified"]
         items = self.items()
-        fresh = [i for i in items if i["status"] != STATUS_OK and notified.get(i["id"]) != i["status"]]
+        fresh = [
+            i for i in items if i["status"] in (STATUS_OVERDUE, STATUS_SOON) and notified.get(i["id"]) != i["status"]
+        ]
         for item in items:
             if item["status"] == STATUS_OK:
                 notified.pop(item["id"], None)

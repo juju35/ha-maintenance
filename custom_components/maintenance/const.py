@@ -12,6 +12,8 @@ VERSION: Final = "0.2.0"
 STATUS_OVERDUE: Final = "overdue"
 STATUS_SOON: Final = "soon"
 STATUS_OK: Final = "ok"
+# A consumable whose sensor is unavailable: shown greyed out, last, never counted nor reminded.
+STATUS_UNAVAILABLE: Final = "unavailable"
 STATUSES: Final = (STATUS_OVERDUE, STATUS_SOON, STATUS_OK)
 
 KIND_TASK: Final = "task"
@@ -26,6 +28,10 @@ CONF_SOON_PERCENT: Final = "soon_percent"
 CONF_REMINDER_TIME: Final = "reminder_time"
 CONF_NOTIFY_SERVICE: Final = "notify_service"
 CONF_IGNORED: Final = "ignored"
+# Who the panel's illustrated top bar is hidden for (the tabs stay), as on the other ha-* panels.
+CONF_HIDE_HEADER: Final = "hide_header"
+HIDE_HEADER_OFF: Final = "off"
+HIDE_HEADER_CHOICES: Final = (HIDE_HEADER_OFF, "all", "non_admin")
 
 DEFAULT_SOON_DAYS: Final = 14
 DEFAULT_SOON_PERCENT: Final = 15

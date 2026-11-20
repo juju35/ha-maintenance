@@ -18,13 +18,15 @@
           "soon_days": "Snart inden for",
           "soon_percent": "Forbrugsstof lavt ved",
           "reminder_time": "Daglig påmindelse kl.",
-          "notify_service": "Påmindelseshandling"
+          "notify_service": "Påmindelseshandling",
+          "hide_header": "Skjul den øverste bjælke"
         },
         "data_description": {
           "soon_days": "En opgave (eller et forbrugsstof i det nuværende tempo), der forfalder inden for så mange dage, tæller som snart.",
           "soon_percent": "Et forbrugsstof på eller under denne procent tæller som snart.",
           "reminder_time": "Én gang om dagen sendes det, der er blevet forsinket eller snart, hvert element én gang.",
-          "notify_service": "For eksempel notify.mobile_app_phone eller notify_hub.send; tom for ingen påmindelse."
+          "notify_service": "For eksempel notify.mobile_app_phone eller notify_hub.send; tom for ingen påmindelse.",
+          "hide_header": "Den illustrerede overskrift over fanerne; fanerne bliver, og på en telefon flytter menuknappen ved siden af dem."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Have",
         "vehicle": "Køretøj",
         "other": "Andet"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "Nej",
+        "all": "For alle",
+        "non_admin": "For ikke-administratorer"
       }
     }
   },

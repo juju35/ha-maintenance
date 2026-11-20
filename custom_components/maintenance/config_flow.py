@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Any
 
 import voluptuous as vol
@@ -11,11 +12,15 @@ from homeassistant.helpers.selector import (
     NumberSelector,
     NumberSelectorConfig,
     NumberSelectorMode,
+    SelectSelector,
+    SelectSelectorConfig,
+    SelectSelectorMode,
     TextSelector,
     TimeSelector,
 )
 
 from .const import (
+    CONF_HIDE_HEADER,
     CONF_NOTIFY_SERVICE,
     CONF_REMINDER_TIME,
     CONF_SOON_DAYS,
@@ -24,6 +29,8 @@ from .const import (
     DEFAULT_SOON_DAYS,
     DEFAULT_SOON_PERCENT,
     DOMAIN,
+    HIDE_HEADER_CHOICES,
+    HIDE_HEADER_OFF,
     TITLE,
 )
 from .tracker import parse_time
@@ -35,6 +42,12 @@ def default_options() -> dict[str, Any]:
         CONF_SOON_PERCENT: DEFAULT_SOON_PERCENT,
         CONF_REMINDER_TIME: DEFAULT_REMINDER_TIME,
     }
+
+
+def hide_header(options: Mapping[str, Any]) -> str:
+    """Who the panel's top bar is hidden for: off (no one, the default), all, or non_admin."""
+    value = options.get(CONF_HIDE_HEADER)
+    return value if value in HIDE_HEADER_CHOICES else HIDE_HEADER_OFF
 
 
 def _number(maximum: int, unit: str) -> NumberSelector:
@@ -68,6 +81,7 @@ class MaintenanceOptionsFlow(OptionsFlow):
                 CONF_SOON_DAYS: int(user_input[CONF_SOON_DAYS]),
                 CONF_SOON_PERCENT: int(user_input[CONF_SOON_PERCENT]),
                 CONF_REMINDER_TIME: parse_time(user_input[CONF_REMINDER_TIME], DEFAULT_REMINDER_TIME).strftime("%H:%M"),
+                CONF_HIDE_HEADER: hide_header(user_input),
             }
             service = (user_input.get(CONF_NOTIFY_SERVICE) or "").strip()
             if service:
@@ -83,6 +97,13 @@ class MaintenanceOptionsFlow(OptionsFlow):
                 vol.Optional(
                     CONF_NOTIFY_SERVICE, description={"suggested_value": current.get(CONF_NOTIFY_SERVICE)}
                 ): TextSelector(),
+                vol.Required(CONF_HIDE_HEADER, default=hide_header(current)): SelectSelector(
+                    SelectSelectorConfig(
+                        options=list(HIDE_HEADER_CHOICES),
+                        translation_key=CONF_HIDE_HEADER,
+                        mode=SelectSelectorMode.LIST,
+                    )
+                ),
             }
         )
         return self.async_show_form(step_id="init", data_schema=schema)

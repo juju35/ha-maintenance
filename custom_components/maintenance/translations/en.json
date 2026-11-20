@@ -18,13 +18,15 @@
           "soon_days": "Due soon within",
           "soon_percent": "Consumable low at",
           "reminder_time": "Daily reminder at",
-          "notify_service": "Reminder action"
+          "notify_service": "Reminder action",
+          "hide_header": "Hide the top bar"
         },
         "data_description": {
           "soon_days": "A task (or a consumable at its current pace) due within this many days counts as soon.",
           "soon_percent": "A consumable at or below this percentage counts as soon.",
           "reminder_time": "Once a day, what became overdue or soon is sent, each item once.",
-          "notify_service": "For example notify.mobile_app_phone or notify_hub.send; leave empty for no reminder."
+          "notify_service": "For example notify.mobile_app_phone or notify_hub.send; leave empty for no reminder.",
+          "hide_header": "The illustrated header above the tabs; the tabs stay, and on a phone the menu button moves beside them."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Garden",
         "vehicle": "Vehicle",
         "other": "Other"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "No",
+        "all": "For everyone",
+        "non_admin": "For non-admins"
       }
     }
   },

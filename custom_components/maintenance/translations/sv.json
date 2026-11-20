@@ -18,13 +18,15 @@
           "soon_days": "Snart inom",
           "soon_percent": "Förbrukningsmaterial lågt vid",
           "reminder_time": "Daglig påminnelse kl.",
-          "notify_service": "Påminnelseåtgärd"
+          "notify_service": "Påminnelseåtgärd",
+          "hide_header": "Dölj det övre fältet"
         },
         "data_description": {
           "soon_days": "En uppgift (eller ett förbrukningsmaterial i nuvarande takt) som förfaller inom så många dagar räknas som snart.",
           "soon_percent": "Ett förbrukningsmaterial på eller under denna procent räknas som snart.",
           "reminder_time": "En gång om dagen skickas det som blivit försenat eller snart, varje objekt en gång.",
-          "notify_service": "Till exempel notify.mobile_app_phone eller notify_hub.send; tomt för ingen påminnelse."
+          "notify_service": "Till exempel notify.mobile_app_phone eller notify_hub.send; tomt för ingen påminnelse.",
+          "hide_header": "Den illustrerade rubriken ovanför flikarna; flikarna finns kvar och på en telefon flyttas menyknappen bredvid dem."
         }
       }
     }
@@ -117,6 +119,13 @@
         "garden": "Trädgård",
         "vehicle": "Fordon",
         "other": "Övrigt"
+      }
+    },
+    "hide_header": {
+      "options": {
+        "off": "Nej",
+        "all": "För alla",
+        "non_admin": "För icke-administratörer"
       }
     }
   },
