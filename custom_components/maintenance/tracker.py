@@ -46,6 +46,7 @@ from .const import (
     MAX_HISTORY,
     MAX_SAMPLES,
     MIN_SAMPLE_DAYS,
+    PANEL_URL,
     STATUS_OK,
     STATUS_OVERDUE,
     STATUS_SOON,
@@ -513,7 +514,7 @@ class MaintenanceTracker:
         if domain == "notify_hub":
             payload |= {"priority": "info", "topic": "maintenance", "source": "Maintenance"}
         else:
-            payload["data"] = {"url": "/maintenance", "clickAction": "/maintenance", "tag": "maintenance"}
+            payload["data"] = {"url": f"/{PANEL_URL}", "clickAction": f"/{PANEL_URL}", "tag": "maintenance"}
         await self.hass.services.async_call(domain, name, payload, blocking=True)
         for item in fresh:
             notified[item["id"]] = item["status"]

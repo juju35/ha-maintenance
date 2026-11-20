@@ -32,8 +32,8 @@ function mtSidebarItem() {
   var sidebar = ha?.querySelector('home-assistant-main')?.shadowRoot?.querySelector('ha-sidebar')?.shadowRoot;
   if (!sidebar) return null;
   return (
-    sidebar.querySelector('#sidebar-panel-maintenance') ||
-    sidebar.querySelector('[href="/maintenance"]') ||
+    sidebar.querySelector('#sidebar-panel-home-maintenance') ||
+    sidebar.querySelector('[href="/home-maintenance"]') ||
     sidebar.querySelector('[data-panel="maintenance"]')
   );
 }
