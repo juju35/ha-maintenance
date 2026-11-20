@@ -60,9 +60,11 @@ ICONS = {
 }
 
 
-def _consumable(entity_id, name, icon, category, source, status, percent=None, hours=None, days=None):
+def _consumable(entity_id, name, icon, category, source, status, percent=None, hours=None, days=None, device=None):
+    short = name.split(" — ")[0]
     return {
-        "id": entity_id, "kind": "consumable", "name": name, "icon": icon, "category": category, "source": source,
+        "id": entity_id, "kind": "consumable", "name": name, "short": short, "device": device, "icon": icon,
+        "category": category, "source": source,
         "status": status, "percent": percent, "hours": hours, "days_left": days, "value": percent if percent is not None else hours,
         "can_reset": True,
     }  # fmt: skip
@@ -77,19 +79,23 @@ def _task(task_id, name, icon, category, status, days, every, unit):
 
 ITEMS = [
     _task("t1", "Descale the water heater", "mdi:water-boiler", "home", "overdue", -5, 12, "months"),
-    _consumable("sensor.purifier_filter_life", "Purifier filter — Living room", "mdi:air-filter", "purifier", "HomeKit", "soon", 12, days=18),
-    _consumable("sensor.printer_black_ink", "Black cartridge — Printer", "mdi:water-outline", "printer", "IPP", "soon", 9),
+    {
+        **_consumable("binary_sensor.vacuum_dirty_water", "Dirty water tank — Vacuum", "mdi:water", "vacuum", "Roborock", "overdue", device="Robot vacuum"),
+        "state": "problem", "can_reset": False, "value": None,
+    },
+    _consumable("sensor.purifier_filter_life", "Purifier filter — Living room", "mdi:air-filter", "purifier", "HomeKit", "soon", 12, days=18, device="Living room purifier"),
+    _consumable("sensor.printer_black_ink", "Black cartridge — Printer", "mdi:water-outline", "printer", "IPP", "soon", 9, device="Office printer"),
     _task("t2", "Test the smoke detectors", "mdi:smoke-detector", "safety", "soon", 3, 1, "months"),
-    _consumable("sensor.vacuum_main_brush_left", "Main brush — Vacuum", "mdi:brush", "vacuum", "Roborock", "ok", 62, 186, 120),
-    _consumable("sensor.vacuum_filter_left", "Vacuum filter", "mdi:air-filter", "vacuum", "Roborock", "ok", 48, 72, 70),
-    _consumable("sensor.bedroom_purifier_filter", "Purifier filter — Bedroom", "mdi:air-filter", "purifier", "HomeKit", "ok", 71),
+    _consumable("sensor.vacuum_main_brush_left", "Main brush — Vacuum", "mdi:brush", "vacuum", "Roborock", "ok", 62, 186, 120, device="Robot vacuum"),
+    _consumable("sensor.vacuum_filter_left", "Filter — Vacuum", "mdi:air-filter", "vacuum", "Roborock", "ok", 48, 72, 70, device="Robot vacuum"),
+    _consumable("sensor.bedroom_purifier_filter", "Purifier filter — Bedroom", "mdi:air-filter", "purifier", "HomeKit", "ok", 71, device="Bedroom purifier"),
     _task("t3", "Boiler and ventilation service", "mdi:wrench", "home", "ok", 214, 12, "months"),
     _task("t4", "Clean the gutters", "mdi:leaf", "garden", "ok", 96, 6, "months"),
-    _consumable("sensor.vacuum_mop_left", "Mop — Vacuum", "mdi:water", "vacuum", "Roborock", "unavailable"),
+    _consumable("sensor.vacuum_mop_left", "Mop — Vacuum", "mdi:water", "vacuum", "Roborock", "unavailable", device="Robot vacuum"),
 ]  # fmt: skip
 CALM = [
     {**i, "status": "ok", "days_left": abs(i["days_left"]) + 20 if i["days_left"] is not None else None}
-    for i in ITEMS[4:]
+    for i in ITEMS[5:]
     if i["status"] != "unavailable"
 ]
 

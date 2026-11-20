@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 - 2026-11-20
+
+### Features
+
+- Panel, Due tab: what is up to date is grouped by device (the manual tasks together), a compact card each with a line and a gauge per item; what is to do stays one list, most urgent first, with the device as its tag
+- Consumables carry their device (`device`) and their name without the device's in front (`short`), shown in the panel
+
 ## 0.3.0 - 2026-11-20
 
 ### Features

@@ -375,8 +375,15 @@ async def test_translated_vacuum(hass: HomeAssistant, tracker):
 
     hours = {"unit_of_measurement": "h", "device_class": "duration"}
     problem = {"device_class": "problem"}
+    side = {**hours, "friendly_name": "Saros Temps restant brosse laterale"}
     add("vacuum", "saros", None, "docked")
-    add("sensor", "saros_temps_restant_brosse_laterale", "side_brush_time_left", "185", hours)
+    add(
+        "sensor",
+        "saros_temps_restant_brosse_laterale",
+        "side_brush_time_left",
+        "185",
+        {**hours, "friendly_name": "Saros Temps restant brosse laterale"},
+    )
     add("sensor", "saros_temps_restant_filtre", "filter_time_left", "143", hours)
     add("sensor", "saros_temps_restant_capteurs", "sensor_time_left", "15", hours)
     add("sensor", "saros_dock_duree_restante_crepine", "strainer_time_left", "39", hours)
@@ -417,3 +424,5 @@ async def test_translated_vacuum(hass: HomeAssistant, tracker):
     assert tracker.history[0]["item"] == "binary_sensor.saros_dock_reservoir_d_eau_sale"
     hass.states.async_set("binary_sensor.saros_dock_reservoir_d_eau_propre", "unavailable", {"device_class": "problem"})
     assert _item(tracker, "binary_sensor.saros_dock_reservoir_d_eau_propre")["status"] == "unavailable"
+    side_item = _item(tracker, "sensor.saros_temps_restant_brosse_laterale")
+    assert (side_item["device"], side_item["short"]) == ("Saros", "Temps restant brosse laterale")
