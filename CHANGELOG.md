@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.2 - 2026-11-21
+
+### Fixes
+
+- Panel, Due tab: two devices with the same name get their own card (grouped by device id, not by name)
+- A consumable's short name drops the device's name only when it is a whole word in front (« Saros 20 Filter » on a « Saros 2 » keeps its name)
+- Panel on a phone: the device cards no longer overflow the screen below 372 px, the device tag of the To do rows shrinks to its icon below 520 px so the item name stays readable, and long device names end in an ellipsis instead of pushing the row
+
 ## 0.4.1 - 2026-11-21
 
 ### Fixes
