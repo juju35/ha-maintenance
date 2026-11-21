@@ -15,7 +15,7 @@ from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import MockConfigEntry, async_mock_service
 
 from custom_components.maintenance.const import DOMAIN
-from custom_components.maintenance.tracker import add_interval
+from custom_components.maintenance.tracker import _short, add_interval
 
 NOW = "2026-11-20 10:00:00+01:00"
 
@@ -375,7 +375,6 @@ async def test_translated_vacuum(hass: HomeAssistant, tracker):
 
     hours = {"unit_of_measurement": "h", "device_class": "duration"}
     problem = {"device_class": "problem"}
-    side = {**hours, "friendly_name": "Saros Temps restant brosse laterale"}
     add("vacuum", "saros", None, "docked")
     add(
         "sensor",
@@ -426,3 +425,14 @@ async def test_translated_vacuum(hass: HomeAssistant, tracker):
     assert _item(tracker, "binary_sensor.saros_dock_reservoir_d_eau_propre")["status"] == "unavailable"
     side_item = _item(tracker, "sensor.saros_temps_restant_brosse_laterale")
     assert (side_item["device"], side_item["short"]) == ("Saros", "Temps restant brosse laterale")
+    assert side_item["device_id"]
+
+
+def test_short_name():
+    """The device's name is cut only when it is a whole word in front."""
+    assert _short("Saros Filter", "Saros") == "Filter"
+    assert _short("Saros - main brush", "Saros") == "Main brush"
+    assert _short("Saros 20 Filter", "Saros 2") == "Saros 20 Filter"
+    assert _short("Sarosfilter", "Saros") == "Sarosfilter"
+    assert _short("Saros", "Saros") == "Saros"
+    assert _short("Filter", None) == "Filter"
