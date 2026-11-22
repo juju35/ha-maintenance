@@ -1,3 +1,71 @@
+// ── Card picker: light previews ──────────────────────────────────────────────
+// Home Assistant's card picker builds a live preview of every card registered with `preview: true`, all at once and
+// with no lazy loading. A preview here is drawn only once it scrolls into view: the picker calls getStubConfig() right
+// before it creates the preview, which marks the next instance of that card; once connected under <hui-card-picker>,
+// that instance holds Home Assistant's state (no render, no history, no animation) until it is visible. Anywhere else
+// (a dashboard, the card editor) the card behaves as before. Editors and other elements are defined unchanged.
+function pickerDefine(tag, Card, options) {
+  const isCard = !tag.endsWith("-editor") && (typeof Card.getStubConfig === "function" || typeof Card.getConfigElement === "function");
+  if (!isCard || typeof IntersectionObserver !== "function") return customElements.define(tag, Card, options);
+  let marks = [];
+  const lazy = class extends Card {
+    static getStubConfig(...args) {
+      marks.push(Date.now());
+      return Card.getStubConfig ? Card.getStubConfig(...args) : {};
+    }
+
+    constructor() {
+      super();
+      const now = Date.now();
+      marks = marks.filter((t) => now - t < 5000);
+      if (marks.length) {
+        marks.shift();
+        this._plHold = true;
+      }
+    }
+
+    set hass(hass) {
+      if (this._plHold) this._plHass = hass;
+      else super.hass = hass;
+    }
+
+    get hass() {
+      return this._plHold ? this._plHass : super.hass;
+    }
+
+    connectedCallback() {
+      if (!this._plHold) return super.connectedCallback?.();
+      if (this.getRootNode()?.host?.localName !== "hui-card-picker") return this._plRelease();
+      if (this._plIo) return;
+      // A custom element is inline until its styles arrive: a block of a card's height keeps the cells apart, so
+      // that only the previews actually on screen intersect.
+      this.style.display = "block";
+      this.style.minHeight = "120px";
+      this._plIo = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && this._plRelease(), {
+        rootMargin: "200px",
+      });
+      this._plIo.observe(this);
+    }
+
+    disconnectedCallback() {
+      if (this._plHold) return;
+      super.disconnectedCallback?.();
+    }
+
+    _plRelease() {
+      this._plIo?.disconnect();
+      this._plIo = null;
+      this._plHold = false;
+      this.style.display = "";
+      this.style.minHeight = "";
+      if (this._plHass !== undefined) super.hass = this._plHass;
+      this._plHass = undefined;
+      if (this.isConnected) super.connectedCallback?.();
+    }
+  };
+  return customElements.define(tag, lazy, options);
+}
+
 /**
  * maintenance-card — the household maintenance at a glance: an illustrated header (a gear turning, a wrench at work
  * when something is overdue, night with the dark theme) and the items most urgent first — consumables found among the
@@ -6,7 +74,7 @@
  * resources by the integration.
  * https://github.com/juju35/ha-maintenance
  */
-var MAINTENANCE_CARD_VERSION = '0.5.1';
+var MAINTENANCE_CARD_VERSION = '0.5.2';
 
 var MT_CARD_I18N = {
   en: { title: "Maintenance", tracked_n: "{n} tracked", overdue_n: "{n} overdue", all_good: "All up to date", next: "Next: {name}, {when}", attention: "Needs attention", done: "Done", overdue_days: "Overdue by {n} d", due_today: "Due today", in_days: "In {n} d", in_months: "In {n} months", left_pct: "{p} % left", left_hours: "≈ {n} h", left_days: "≈ {n} days", empty: "Empty", every_days: "every {n} d", every_weeks: "every {n} wk", every_months: "every {n} mo", manual: "Manual", nothing: "Nothing tracked yet", not_found: "Maintenance is not set up", card_name: "Maintenance Card", card_desc: "Filters, brushes, ink and chores: what is overdue, what comes next", ed_entity: "Sensor", ed_title: "Title", ed_rows: "Rows", ed_language: "Language", soon_n: "{n} due soon", ed_illustration_theme: "Illustration", th_auto: "Automatic (theme)", th_day: "Day", th_night: "Night", unavailable: "Unavailable" },
@@ -347,10 +415,10 @@ class MaintenanceCardEditor extends HTMLElement {
   }
 }
 
-if (!customElements.get('maintenance-card')) customElements.define('maintenance-card', MaintenanceCard);
-if (!customElements.get('maintenance-card-editor')) customElements.define('maintenance-card-editor', MaintenanceCardEditor);
+if (!customElements.get('maintenance-card')) pickerDefine('maintenance-card', MaintenanceCard);
+if (!customElements.get('maintenance-card-editor')) pickerDefine('maintenance-card-editor', MaintenanceCardEditor);
 window.customCards = window.customCards || [];
 if (!window.customCards.some((c) => c.type === 'maintenance-card')) {
   var mtT = Object.assign({}, MT_CARD_I18N.en, MT_CARD_I18N[mtLang(document.querySelector('home-assistant')?.hass, {})]);
-  window.customCards.push({ type: 'maintenance-card', name: mtT.card_name, description: mtT.card_desc, preview: false });
+  window.customCards.push({ type: 'maintenance-card', name: mtT.card_name, description: mtT.card_desc, preview: true });
 }
