@@ -352,5 +352,5 @@ if (!customElements.get('maintenance-card-editor')) customElements.define('maint
 window.customCards = window.customCards || [];
 if (!window.customCards.some((c) => c.type === 'maintenance-card')) {
   var mtT = Object.assign({}, MT_CARD_I18N.en, MT_CARD_I18N[mtLang(document.querySelector('home-assistant')?.hass, {})]);
-  window.customCards.push({ type: 'maintenance-card', name: mtT.card_name, description: mtT.card_desc, preview: true });
+  window.customCards.push({ type: 'maintenance-card', name: mtT.card_name, description: mtT.card_desc, preview: false });
 }
