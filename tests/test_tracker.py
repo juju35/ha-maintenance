@@ -436,3 +436,41 @@ def test_short_name():
     assert _short("Sarosfilter", "Saros") == "Sarosfilter"
     assert _short("Saros", "Saros") == "Saros"
     assert _short("Filter", None) == "Filter"
+
+
+async def test_philips_consumables(hass: HomeAssistant, tracker):
+    """Sonicare's brush head wear counts up (and its German ID has no consumable word); the shaver head counts down."""
+    other = MockConfigEntry(domain="test")
+    other.add_to_hass(hass)
+    registry = er.async_get(hass)
+    percent = {"unit_of_measurement": "%"}
+
+    def add(platform, device, object_id, key, state, attributes):
+        registry.async_get_or_create(
+            "sensor", platform, f"{object_id}_{key}", suggested_object_id=object_id, device_id=device,
+            config_entry=other, translation_key=key,
+        )  # fmt: skip
+        hass.states.async_set(f"sensor.{object_id}", state, attributes)
+
+    head = _device(hass, other, "Sonicare Brush Head")
+    add("philips_sonicare_ble", head, "sonicare_burstenkopf_verschleiss", "brushhead_wear", "10", percent)
+    add(
+        "philips_sonicare_ble", head, "sonicare_brush_head_wear", "brushhead_wear", "95",
+        {**percent, "friendly_name": "Sonicare Brush Head Wear"},
+    )  # fmt: skip
+    add("philips_sonicare_ble", head, "sonicare_brush_head_usage", "brushhead_usage", "1200", {})
+    shaver = _device(hass, other, "Shaver")
+    add("philips_shaver", shaver, "shaver_shaver_head_remaining", "head_remaining", "80", percent)
+    tracker.async_discover()
+    found = {f["entity_id"]: f for f in tracker.found()}
+    assert "sensor.sonicare_brush_head_usage" not in found
+    german = _item(tracker, "sensor.sonicare_burstenkopf_verschleiss")
+    assert (german["percent"], german["status"], german["icon"]) == (90, "ok", "mdi:toothbrush")
+    worn = _item(tracker, "sensor.sonicare_brush_head_wear")
+    assert (worn["percent"], worn["status"], worn["name"]) == (5, "soon", "Sonicare Brush Head")
+    hass.states.async_set("sensor.sonicare_brush_head_wear", "100", percent)
+    assert _item(tracker, "sensor.sonicare_brush_head_wear")["status"] == "overdue"
+    head_item = _item(tracker, "sensor.shaver_shaver_head_remaining")
+    assert (head_item["percent"], head_item["status"], found["sensor.shaver_shaver_head_remaining"]["key"]) == (
+        80, "ok", "shaver_head",
+    )  # fmt: skip

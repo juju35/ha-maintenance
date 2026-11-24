@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.4 - 2026-11-24
+
+### Fixes
+- Philips Sonicare BLE: the brush head wear sensor (`brushhead_wear`) counts wear up — 0 % on a new head, 100 % when it is due. It is now read the other way round (100 % − wear = what is left), so a new head is up to date and a worn one due. It is found whatever Home Assistant's language (the German entity ID, `…_burstenkopf_verschleiss`, has no consumable word in it) (#14)
+- Philips Shaver: the shaver head (`head_remaining`, counting down) is now found (#14)
+- Both are recognised by their integration and translation key before the word matching; the other brush head sensors (usage, lifetime limit…) stay out. A name ending in « Wear » loses that word, as « Remaining » already did
+
 ## 0.5.3 - 2026-11-24
 
 ### Maintenance

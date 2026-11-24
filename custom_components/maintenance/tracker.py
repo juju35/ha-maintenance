@@ -97,6 +97,14 @@ STATUS_CONSUMABLES: tuple[tuple[str, str], ...] = (
     ("dust_bin", "mdi:delete-variant"),
     ("dust_bag", "mdi:delete-variant"),
 )
+# Sensors the words alone get wrong, known by their integration and translation key: what they are, their category,
+# their icon and whether they count wear up (0 % on a new part, 100 % when it is due) rather than what is left.
+KNOWN_CONSUMABLES: dict[tuple[str, str], tuple[str, str, str, bool]] = {
+    # Philips Sonicare BLE: on its own "Brush Head" device; its key has no "_brush_" word, nor its German entity ID.
+    ("philips_sonicare_ble", "brushhead_wear"): ("brush_head", "home", "mdi:toothbrush", True),
+    # Philips Shaver: counts down, no consumable word in it.
+    ("philips_shaver", "head_remaining"): ("shaver_head", "home", "mdi:razor-double-edge", False),
+}
 _LEFT = ("left", "remaining", "life", "lifespan", "level", "time", "usage", "consumable")
 _NEVER = (
     "battery", "signal", "humidity", "temperature", "rssi", "pm2", "pm10", "voc", "co2", "water_level", "moisture",
@@ -110,7 +118,7 @@ _TIME_UNITS = {
 }
 _WORD = re.compile(r"[^a-z0-9]+")
 _SUFFIX = re.compile(
-    r"\s+(time left|remaining time|remaining|life left|life level|life|level|left|usage)$", re.IGNORECASE
+    r"\s+(time left|remaining time|remaining|life left|life level|life|level|left|usage|wear)$", re.IGNORECASE
 )
 
 
@@ -276,6 +284,8 @@ class MaintenanceTracker:
         entry = entities.async_get(state.entity_id)
         if entry is not None and entry.platform == DOMAIN:
             return None
+        if entry is not None and (entry.platform, entry.translation_key) in KNOWN_CONSUMABLES:
+            return self._known_consumable(entry, devices, unit) if unit == "%" else None
         words = _words(
             state.entity_id.split(".", 1)[1],
             state.attributes.get("friendly_name"),
@@ -313,6 +323,22 @@ class MaintenanceTracker:
             "device": (device.name_by_user or device.name) if device else None,
             "device_id": device.id if device else None,
             "reset": self._reset_button(entry, entities, key),
+        }
+
+    def _known_consumable(self, entry: er.RegistryEntry, devices: dr.DeviceRegistry, unit: str) -> dict[str, Any]:
+        key, category, icon, wear = KNOWN_CONSUMABLES[(entry.platform, entry.translation_key)]
+        device = devices.async_get(entry.device_id) if entry.device_id else None
+        return {
+            "key": key,
+            "category": category,
+            "icon": icon,
+            "unit": unit,
+            "lifetime": None,
+            "wear": wear,
+            "source": self._source(entry),
+            "device": (device.name_by_user or device.name) if device else None,
+            "device_id": device.id if device else None,
+            "reset": None,
         }
 
     def _status_consumable(self, state, entry, entities, devices, words: str) -> dict[str, Any] | None:
@@ -378,13 +404,20 @@ class MaintenanceTracker:
         except ValueError:
             return None
 
+    def _left(self, entity_id: str, info: dict[str, Any]) -> float | None:
+        """How much is left: a wear sensor (0 % new, 100 % due) turned the other way round."""
+        value = self._value(entity_id)
+        if value is None or not info.get("wear"):
+            return value
+        return max(0.0, 100.0 - value)
+
     def _sample(self) -> None:
         """One value a day per consumable; an increase (replaced) starts the samples again."""
         today = dt_util.now().date().isoformat()
         samples: dict[str, list[list[Any]]] = self._data["samples"]
         changed = False
-        for entity_id in self._found:
-            value = self._value(entity_id)
+        for entity_id, info in self._found.items():
+            value = self._left(entity_id, info)
             if value is None:
                 continue
             series = samples.setdefault(entity_id, [])
@@ -491,7 +524,7 @@ class MaintenanceTracker:
     def _consumable_item(self, entity_id: str, info: dict[str, Any], today: date) -> dict[str, Any] | None:
         if info.get("binary"):
             return self._status_item(entity_id, info)
-        value = self._value(entity_id)
+        value = self._left(entity_id, info)
         state = self.hass.states.get(entity_id)
         if value is None:
             return self._unavailable_item(entity_id, info, state)
