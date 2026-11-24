@@ -39,8 +39,8 @@ carries the new version, updated together in one commit:
 1. `CHANGELOG.md` → add a "## X.Y.Z - YYYY-MM-DD" section at the top (`### Features` | `Fixes` | `Performance` | `Maintenance`).
 2. `custom_components/maintenance/manifest.json` → `"version": "X.Y.Z"`.
 3. `custom_components/maintenance/const.py` → `VERSION: Final = "X.Y.Z"`.
-4. `src/maintenance-panel/core.js` → `MAINTENANCE_PANEL_VERSION` and
-   `src/maintenance-card/card.js` → `MAINTENANCE_CARD_VERSION`.
+4. `src/maintenance-panel/header.js` → `MAINTENANCE_PANEL_VERSION` and
+   `src/maintenance-card/header.js` → `MAINTENANCE_CARD_VERSION`.
 - Bump rule: `fix` → patch, `feat` → minor, breaking change → major.
 - The PR/commit title carries the version in parentheses, e.g. `feat: new option (X.Y.Z)`.
 

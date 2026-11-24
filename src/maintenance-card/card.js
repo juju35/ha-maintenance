@@ -1,16 +1,5 @@
-/**
- * maintenance-card — the household maintenance at a glance: an illustrated header (a gear turning, a wrench at work
- * when something is overdue, night with the dark theme) and the items most urgent first — consumables found among the
- * device sensors (filters, brushes, ink…) and manual tasks — with a Done button on what needs doing.
- * Reads the integration's "Overdue" sensor (its `maintenance` attribute). Served and added to the dashboard
- * resources by the integration.
- * https://github.com/juju35/ha-maintenance
- */
 import { pickerDefine } from "./card-picker.js";
 import { MT_CARD_I18N } from "./i18n/mt-card-i18n.js";
-
-export var MAINTENANCE_CARD_VERSION = '0.5.3';
-
 
 export var MT_DEFAULTS = { rows: 5, illustration_theme: 'auto' };
 export var MT_TONES = { overdue: 'bad', soon: 'warn', ok: 'ok', unavailable: 'idle' };

@@ -181,7 +181,7 @@ The panel and the card are written as ES modules in `src/maintenance-panel/` and
 
 ### Releasing
 
-1. Bump the version, together, in `custom_components/maintenance/manifest.json`, `const.py` (`VERSION`), and the `MAINTENANCE_PANEL_VERSION` / `MAINTENANCE_CARD_VERSION` constants of the panel and the card (`src/maintenance-panel/core.js`, `src/maintenance-card/card.js`; the **Version consistency** check compares them)
+1. Bump the version, together, in `custom_components/maintenance/manifest.json`, `const.py` (`VERSION`), and the `MAINTENANCE_PANEL_VERSION` / `MAINTENANCE_CARD_VERSION` constants of the panel and the card (`src/maintenance-panel/header.js`, `src/maintenance-card/header.js`; the **Version consistency** check compares them)
 2. Add a `## <version>` section at the top of [CHANGELOG.md](https://github.com/juju35/ha-maintenance/blob/main/CHANGELOG.md)
 3. Push to `main`: the **Release** workflow creates the tag and the GitHub release with the changelog section as notes
 

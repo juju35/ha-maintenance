@@ -36,7 +36,7 @@ jobs:
           VERSION="$(jq -r .version custom_components/maintenance/manifest.json)"
           grep -q "^VERSION: Final = \"$VERSION\"" custom_components/maintenance/const.py || { echo "::error file=custom_components/maintenance/const.py::VERSION is not $VERSION"; exit 1; }
           # The panel and the card are written as ES modules (src/<stem>/), assembled at build.
-          for js in maintenance-panel/core.js:MAINTENANCE_PANEL_VERSION maintenance-card/card.js:MAINTENANCE_CARD_VERSION; do
+          for js in maintenance-panel/header.js:MAINTENANCE_PANEL_VERSION maintenance-card/header.js:MAINTENANCE_CARD_VERSION; do
             file="src/${js%%:*}"
             grep -q "^export var ${js##*:} = '$VERSION';" "$file" || { echo "::error file=$file::${js##*:} is not $VERSION"; exit 1; }
           done

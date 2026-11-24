@@ -1,5 +1,6 @@
 // ── End of the folded top bar ──
-import { MAINTENANCE_PANEL_VERSION, MTP_BLANK, MTP_CATEGORIES, MTP_TABS, MTP_TONE, mtpDeviceIcon, mtpEsc, mtpFill, mtpSync } from "./core.js";
+import { MAINTENANCE_PANEL_VERSION } from "./header.js";
+import { MTP_BLANK, MTP_CATEGORIES, MTP_TABS, MTP_TONE, mtpDeviceIcon, mtpEsc, mtpFill, mtpSync } from "./core.js";
 import { maintenancePanelFold } from "./fold.js";
 import { MT_PANEL_I18N } from "./i18n/mt-panel-i18n.js";
 
