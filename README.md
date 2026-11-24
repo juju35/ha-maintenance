@@ -54,6 +54,8 @@ Maintenance reads the consumable sensors that other integrations create. It reco
 - [HomeKit Device](https://www.home-assistant.io/integrations/homekit_controller/) — purifier filter life level
 - [Internet Printing Protocol (IPP)](https://www.home-assistant.io/integrations/ipp/) — ink and toner levels
 - [Brother Printer](https://www.home-assistant.io/integrations/brother/) — toner and drum remaining
+- [Philips Sonicare BLE](https://github.com/mtheli/philips_sonicare_ble) — brush head wear (read as what is left)
+- [Philips Shaver](https://github.com/mtheli/philips_shaver) — shaver head remaining
 
 Any other integration whose sensors follow the same naming works too; a sensor can be left out in the panel's settings.
 
