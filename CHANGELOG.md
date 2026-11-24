@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.3 - 2026-11-24
+
+### Maintenance
+- The panel and the card sources are split into ES modules: `src/maintenance-panel/` and `src/maintenance-card/` (entry `index.js`), cut at their sections, with the translations in one file per language (`i18n/<lang>.js`). `scripts/build-frontend.mjs` assembles them, in their original order, into the same `frontend/maintenance-panel.js` and `frontend/maintenance-card.js` as before, which are no longer committed; the release zip is unchanged.
+
 ## 0.5.2 - 2026-11-22
 
 ### Performance

@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "custom_components/**/frontend/**"
+      - "src/**"
       - "custom_components/maintenance/translations/en.json"
       - "custom_components/maintenance/const.py"
       - "scripts/**"
@@ -84,6 +85,14 @@ jobs:
           done
           [ -n "$ok" ] || { echo "::error::apt failed 3 times"; exit 1; }
           ffmpeg -version > /dev/null
+      # The panel and the card are assembled from their ES modules (src/<stem>/), not committed.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+      - name: Build the frontend
+        run: |
+          npm install --no-save --no-package-lock acorn@8.19.0
+          node scripts/build-frontend.mjs
       - name: Render screenshots
         run: |
           set -o pipefail

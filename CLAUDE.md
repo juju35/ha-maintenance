@@ -23,6 +23,7 @@ pre-commit run -a
 vulture custom_components .vulture_whitelist.py --min-confidence 60
 npx --yes jscpd@5.4.2 .
 pytest
+npm install --no-save --no-package-lock acorn@8.19.0 && node scripts/build-frontend.mjs && node scripts/split-frontend.mjs --check
 ```
 
 ## Releasing — how it works here
@@ -38,8 +39,8 @@ carries the new version, updated together in one commit:
 1. `CHANGELOG.md` → add a "## X.Y.Z - YYYY-MM-DD" section at the top (`### Features` | `Fixes` | `Performance` | `Maintenance`).
 2. `custom_components/maintenance/manifest.json` → `"version": "X.Y.Z"`.
 3. `custom_components/maintenance/const.py` → `VERSION: Final = "X.Y.Z"`.
-4. `custom_components/maintenance/frontend/maintenance-panel.js` → `MAINTENANCE_PANEL_VERSION` and
-   `frontend/maintenance-card.js` → `MAINTENANCE_CARD_VERSION`.
+4. `src/maintenance-panel/core.js` → `MAINTENANCE_PANEL_VERSION` and
+   `src/maintenance-card/card.js` → `MAINTENANCE_CARD_VERSION`.
 - Bump rule: `fix` → patch, `feat` → minor, breaking change → major.
 - The PR/commit title carries the version in parentheses, e.g. `feat: new option (X.Y.Z)`.
 
@@ -57,6 +58,14 @@ carries the new version, updated together in one commit:
 
 ## Supported integrations
 This builds on other Home Assistant integrations (it reads their consumable sensors), so keep the `## Supported integrations` section (title verbatim) listing the HA integrations it works on top of, with a link to each.
+
+## Source layout
+- The panel and the card are ES modules in `src/maintenance-panel/` and `src/maintenance-card/` (entry `index.js`),
+  assembled at build by `scripts/build-frontend.mjs` (`scripts/bundle.mjs`) into `custom_components/maintenance/frontend/<stem>.js`,
+  which is **not committed** (run the build before the screenshots, the layout check or the translation split).
+- Modules share one scope once assembled: keep top-level names unique across modules; a new module must be listed in its `index.js`.
+- Translations: one file per language in `src/<stem>/i18n/<lang>.js`, rebuilt into a single table literal at build.
+- `maintenance-badge.js` (small) stays written by hand in `frontend/`.
 
 ## Translations
 - English is the source. Keep every language in sync when a user-facing string changes.
