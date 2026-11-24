@@ -169,15 +169,19 @@ Every option is in the visual editor (the illustration theme included).
 
 ```bash
 pip install -r requirements_test.txt && pytest
-npm install --no-save acorn@8.19.0 && node scripts/split-frontend.mjs --check   # the translation split the release makes
+npm install --no-save --no-package-lock acorn@8.19.0
+node scripts/build-frontend.mjs           # assembles the panel and the card from src/ into frontend/
+node scripts/split-frontend.mjs --check   # the translation split the release makes
 pip install playwright pillow && playwright install chromium
 python scripts/screenshots.py    # renders the stills and the GIF (needs ffmpeg) into screenshots/
 python scripts/layout_check.py   # the card and the panel patch their DOM in place: no rebuild, no height jump
 ```
 
+The panel and the card are written as ES modules in `src/maintenance-panel/` and `src/maintenance-card/` (entry `index.js`, translations one file per language in `i18n/`); `scripts/build-frontend.mjs` assembles each into the single classic script served from `frontend/`, which is not committed. The badge stays written by hand in `frontend/`.
+
 ### Releasing
 
-1. Bump the version, together, in `custom_components/maintenance/manifest.json`, `const.py` (`VERSION`), and the `MAINTENANCE_PANEL_VERSION` / `MAINTENANCE_CARD_VERSION` constants of the panel and the card (the **Version consistency** check compares them)
+1. Bump the version, together, in `custom_components/maintenance/manifest.json`, `const.py` (`VERSION`), and the `MAINTENANCE_PANEL_VERSION` / `MAINTENANCE_CARD_VERSION` constants of the panel and the card (`src/maintenance-panel/header.js`, `src/maintenance-card/header.js`; the **Version consistency** check compares them)
 2. Add a `## <version>` section at the top of [CHANGELOG.md](https://github.com/juju35/ha-maintenance/blob/main/CHANGELOG.md)
 3. Push to `main`: the **Release** workflow creates the tag and the GitHub release with the changelog section as notes
 

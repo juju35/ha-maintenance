@@ -57,12 +57,14 @@ jobs:
         with:
           node-version: "22"
 
-      # Only English stays in the frontend files of the zip; each other language is its own file next to them,
-      # fetched when needed (scripts/split-frontend.mjs). The repository keeps every language in the sources.
-      - name: Split the translations
+      # The panel and the card are assembled from their ES modules (src/<stem>/, scripts/build-frontend.mjs). Only
+      # English stays in the frontend files of the zip; each other language is its own file next to them, fetched
+      # when needed (scripts/split-frontend.mjs). The repository keeps every language in the sources.
+      - name: Build the frontend and split the translations
         if: steps.version.outputs.exists == 'false'
         run: |
           npm install --no-save --no-package-lock acorn@8.19.0
+          node scripts/build-frontend.mjs
           node scripts/split-frontend.mjs
 
       - name: Build zip and notes

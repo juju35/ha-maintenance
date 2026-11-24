@@ -35,9 +35,10 @@ jobs:
         run: |
           VERSION="$(jq -r .version custom_components/maintenance/manifest.json)"
           grep -q "^VERSION: Final = \"$VERSION\"" custom_components/maintenance/const.py || { echo "::error file=custom_components/maintenance/const.py::VERSION is not $VERSION"; exit 1; }
-          for js in maintenance-panel.js:MAINTENANCE_PANEL_VERSION maintenance-card.js:MAINTENANCE_CARD_VERSION; do
-            file="custom_components/maintenance/frontend/${js%%:*}"
-            grep -q "^var ${js##*:} = '$VERSION';" "$file" || { echo "::error file=$file::${js##*:} is not $VERSION"; exit 1; }
+          # The panel and the card are written as ES modules (src/<stem>/), assembled at build.
+          for js in maintenance-panel/header.js:MAINTENANCE_PANEL_VERSION maintenance-card/header.js:MAINTENANCE_CARD_VERSION; do
+            file="src/${js%%:*}"
+            grep -q "^export var ${js##*:} = '$VERSION';" "$file" || { echo "::error file=$file::${js##*:} is not $VERSION"; exit 1; }
           done
           grep -q "^## $VERSION " CHANGELOG.md || { echo "::error file=CHANGELOG.md::no '## $VERSION' entry in CHANGELOG.md"; exit 1; }
           echo "Version $VERSION everywhere"
@@ -114,8 +115,10 @@ jobs:
         with:
           node-version: "22"
 
-      # Splits a copy of the frontend as the release does, and rebuilds every table to check it.
+      # Assembles the panel and the card from src/, splits a copy of the frontend as the release does, and rebuilds
+      # every table to check it.
       - name: Check the translation split
         run: |
           npm install --no-save --no-package-lock acorn@8.19.0
+          node scripts/build-frontend.mjs
           node scripts/split-frontend.mjs --check
