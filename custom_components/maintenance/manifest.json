@@ -2,6 +2,7 @@
   "domain": "maintenance",
   "name": "Maintenance",
   "after_dependencies": ["frontend", "http", "lovelace", "notify", "websocket_api"],
+  "categories": ["helpers"],
   "codeowners": ["@juju35"],
   "config_flow": true,
   "documentation": "https://github.com/juju35/ha-maintenance",
