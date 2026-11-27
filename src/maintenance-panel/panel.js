@@ -230,7 +230,7 @@ export class MaintenancePanel extends HTMLElement {
     var html = `<style>${MaintenancePanel.styles()}</style>
       <div class="page tone-${tone}${dark ? ' night' : ''}${bare ? ' bare' : ''}">
         ${bare ? '' : `<header class="top">
-          ${MaintenancePanel.scene(tone === 'bad')}
+          ${MaintenancePanel.scene(tone, dark)}
           <div class="ground"></div>
           <div class="bar">
             ${menuButton}
@@ -268,14 +268,29 @@ export class MaintenancePanel extends HTMLElement {
     }
   }
 
-  static scene(busy) {
+  // The header's scene: a workshop — a pegboard (a gear turning, a wrench, a filter cartridge, a wall calendar), a
+  // workbench with a toolbox and a spray bottle. Overdue: the wrench at work, the calendar's day red; due soon: the
+  // filter amber.
+  static scene(tone, night) {
+    var P = (day, dark) => (night ? dark : day);
+    var bad = tone === 'bad';
+    var warn = bad || tone === 'warn';
     var holes = [];
-    for (var x = 0; x < 8; x++) for (var y = 0; y < 3; y++) holes.push(`<circle cx="${30 + x * 26}" cy="${26 + y * 24}" r="2"/>`);
-    return `<svg class="scene" viewBox="0 0 240 110" preserveAspectRatio="xMaxYMax meet" aria-hidden="true">
-      <rect class="board" x="14" y="12" width="212" height="92" rx="8"/><g class="holes">${holes.join('')}</g>
-      <g class="gear"><path d="M66 36l5 0 1 6 5 2 5-4 4 4-4 5 2 5 6 1 0 5-6 1-2 5 4 5-4 4-5-4-5 2-1 6-5 0-1-6-5-2-5 4-4-4 4-5-2-5-6-1 0-5 6-1 2-5-4-5 4-4 5 4 5-2z"/><circle class="hub" cx="68.5" cy="58.5" r="6"/></g>
-      <g class="wrench${busy ? ' busy' : ''}"><path d="M134 30a11 11 0 0 0-10 15l-18 32a5 5 0 0 0 9 5l18-32a11 11 0 0 0 13-12l-6 4-6-4 0-6z"/></g>
-      <g class="filter"><rect x="170" y="36" width="34" height="48" rx="5"/><path d="M175 47h24M175 58h24M175 69h24"/></g>
+    for (var x = 0; x < 7; x++) for (var y = 0; y < 2; y++) holes.push(`<circle cx="${108 + x * 21}" cy="${16 + y * 18}" r="1.5"/>`);
+    return `<svg class="scene" viewBox="80 0 200 80" preserveAspectRatio="xMaxYMax meet" aria-hidden="true">
+      <rect x="96" y="6" width="150" height="50" rx="4" fill="${P('#fdf6e3', '#2b3a3a')}" stroke="${P('#e7d8b1', '#3f5656')}" stroke-width="2"/>
+      <g fill="${P('#d6c49a', '#4f6a6a')}">${holes.join('')}</g>
+      <g class="gear"><path d="M122 18h4l1 4 3 1.5 3-2.5 3 3-2.5 3 1.5 3 4 1v4l-4 1-1.5 3 2.5 3-3 3-3-2.5-3 1.5-1 4h-4l-1-4-3-1.5-3 2.5-3-3 2.5-3-1.5-3-4-1v-4l4-1 1.5-3-2.5-3 3-3 3 2.5 3-1.5z" fill="${P('#5eead4', '#2dd4bf')}"/><circle cx="124" cy="31" r="4" fill="${P('#fdf6e3', '#2b3a3a')}"/></g>
+      <g class="wrench${bad ? ' busy' : ''}"><path d="M170 12a7 7 0 0 0-6 9l-11 20a3 3 0 0 0 5 3l11-20a7 7 0 0 0 9-8l-4 2-4-2v-4z" fill="${bad ? '#ef4444' : P('#94a3b8', '#cbd5e1')}"/></g>
+      <rect x="188" y="14" width="16" height="34" rx="3" fill="#fff" stroke="${warn ? '#f59e0b' : P('#5eead4', '#2dd4bf')}" stroke-width="2"/>
+      <path d="M191 21h10M191 27h10M191 33h10M191 39h10" stroke="${warn ? '#fcd34d' : P('#99f6e4', '#5eead4')}" stroke-width="2"/>
+      <rect x="216" y="12" width="24" height="26" rx="3" fill="#fff" stroke="${P('#cbd5e1', '#64748b')}" stroke-width="1.5"/>
+      <rect x="216" y="12" width="24" height="7" rx="3" fill="${bad ? '#ef4444' : P('#0d9488', '#14b8a6')}"/>
+      <text x="228" y="33" font-size="11" font-weight="700" text-anchor="middle" fill="${bad ? '#ef4444' : '#334155'}">${bad ? '!' : '✓'}</text>
+      <rect x="84" y="58" width="190" height="7" rx="2" fill="${P('#c08a52', '#7a5534')}"/>
+      <rect x="94" y="65" width="6" height="15" fill="${P('#a8743f', '#5e4128')}"/><rect x="258" y="65" width="6" height="15" fill="${P('#a8743f', '#5e4128')}"/>
+      <rect x="120" y="46" width="34" height="12" rx="2" fill="${P('#f97316', '#c2410c')}"/><path d="M130 46v-4h14v4" fill="none" stroke="${P('#9a3412', '#7c2d12')}" stroke-width="2"/>
+      <rect x="226" y="44" width="10" height="14" rx="2" fill="${P('#60a5fa', '#3b82f6')}"/><path d="M228 44v-4h8l3 2" fill="none" stroke="${P('#334155', '#94a3b8')}" stroke-width="2"/>
     </svg>`;
   }
 
@@ -429,15 +444,8 @@ export class MaintenancePanel extends HTMLElement {
       .night .top { background: linear-gradient(#0c2626, #153838); }
       .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: #5eead4; } .night .ground { background: #2c6b66; }
       /* The illustration at the right, just left of the round button, as on the other ha-* panels. */
-      .scene { position: absolute; right: 76px; bottom: 10px; height: 84px; width: auto; max-width: 40%; }
+      .scene { position: absolute; right: 76px; bottom: 10px; height: 80px; width: 200px; max-width: 40%; }
       @media (max-width: 700px) { .scene { opacity: .35; } }
-      .board { fill: #fdf6e3; stroke: #e7d8b1; stroke-width: 2; } .holes circle { fill: #d6c49a; }
-      .night .board { fill: #2b3a3a; stroke: #3f5656; } .night .holes circle { fill: #4f6a6a; }
-      .gear path { fill: #5eead4; } .gear .hub { fill: #fdf6e3; } .night .gear path { fill: #2dd4bf; } .night .gear .hub { fill: #2b3a3a; }
-      .wrench path { fill: #94a3b8; } .night .wrench path { fill: #cbd5e1; } .tone-bad .wrench path { fill: #ef4444; }
-      .filter rect { fill: #fff; stroke: #5eead4; stroke-width: 2; } .filter path { stroke: #99f6e4; stroke-width: 2; }
-      .tone-warn .filter rect, .tone-bad .filter rect { stroke: #f59e0b; } .tone-warn .filter path, .tone-bad .filter path { stroke: #fcd34d; }
-      .night .filter rect { fill: #e6ebf3; }
       .gear { transform-box: fill-box; transform-origin: 50% 50%; animation: mtp-spin 12s linear infinite; }
       .wrench { transform-box: fill-box; transform-origin: 80% 15%; } .wrench.busy { animation: mtp-turn 1.5s ease-in-out infinite; }
       @keyframes mtp-spin { to { transform: rotate(360deg); } }

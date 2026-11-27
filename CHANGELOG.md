@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0 - 2026-11-27
+
+### Features
+- Illustrated header (card and panel): a workshop scene — a pegboard with a turning gear, a wrench, a filter cartridge and a wall calendar, over a workbench with a toolbox. Overdue: the wrench gets to work and the calendar shows a red day; due soon: the filter turns amber.
+- Card: the status pill sits right after the title, like on the panel and the other ha-* cards; a long subtitle ends before the scene.
+
 ## 0.5.5 - 2026-11-27
 
 ### Fixes
