@@ -3,4 +3,5 @@
 import "./card-picker.js";
 import "./header.js";
 import "./i18n/mt-card-i18n.js";
+import "./scene.js";
 import "./card.js";

@@ -3,6 +3,7 @@ import { MAINTENANCE_PANEL_VERSION } from "./header.js";
 import { MTP_BLANK, MTP_CATEGORIES, MTP_TABS, MTP_TONE, mtpDeviceIcon, mtpEsc, mtpFill, mtpSync } from "./core.js";
 import { maintenancePanelFold } from "./fold.js";
 import { MT_PANEL_I18N } from "./i18n/mt-panel-i18n.js";
+import { mtWorkshopScene } from "../maintenance-card/scene.js";
 
 export class MaintenancePanel extends HTMLElement {
   constructor() {
@@ -230,7 +231,7 @@ export class MaintenancePanel extends HTMLElement {
     var html = `<style>${MaintenancePanel.styles()}</style>
       <div class="page tone-${tone}${dark ? ' night' : ''}${bare ? ' bare' : ''}">
         ${bare ? '' : `<header class="top">
-          ${MaintenancePanel.scene(tone === 'bad')}
+          ${mtWorkshopScene(tone, dark)}
           <div class="ground"></div>
           <div class="bar">
             ${menuButton}
@@ -268,16 +269,6 @@ export class MaintenancePanel extends HTMLElement {
     }
   }
 
-  static scene(busy) {
-    var holes = [];
-    for (var x = 0; x < 8; x++) for (var y = 0; y < 3; y++) holes.push(`<circle cx="${30 + x * 26}" cy="${26 + y * 24}" r="2"/>`);
-    return `<svg class="scene" viewBox="0 0 240 110" preserveAspectRatio="xMaxYMax meet" aria-hidden="true">
-      <rect class="board" x="14" y="12" width="212" height="92" rx="8"/><g class="holes">${holes.join('')}</g>
-      <g class="gear"><path d="M66 36l5 0 1 6 5 2 5-4 4 4-4 5 2 5 6 1 0 5-6 1-2 5 4 5-4 4-5-4-5 2-1 6-5 0-1-6-5-2-5 4-4-4 4-5-2-5-6-1 0-5 6-1 2-5-4-5 4-4 5 4 5-2z"/><circle class="hub" cx="68.5" cy="58.5" r="6"/></g>
-      <g class="wrench${busy ? ' busy' : ''}"><path d="M134 30a11 11 0 0 0-10 15l-18 32a5 5 0 0 0 9 5l18-32a11 11 0 0 0 13-12l-6 4-6-4 0-6z"/></g>
-      <g class="filter"><rect x="170" y="36" width="34" height="48" rx="5"/><path d="M175 47h24M175 58h24M175 69h24"/></g>
-    </svg>`;
-  }
 
   _row(item, t, todo) {
     var tone = MTP_TONE[item.status] || 'ok';
@@ -429,15 +420,8 @@ export class MaintenancePanel extends HTMLElement {
       .night .top { background: linear-gradient(#0c2626, #153838); }
       .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: #5eead4; } .night .ground { background: #2c6b66; }
       /* The illustration at the right, just left of the round button, as on the other ha-* panels. */
-      .scene { position: absolute; right: 76px; bottom: 10px; height: 84px; width: auto; max-width: 40%; }
+      .scene { position: absolute; right: 76px; bottom: 10px; height: 80px; width: 200px; max-width: 40%; }
       @media (max-width: 700px) { .scene { opacity: .35; } }
-      .board { fill: #fdf6e3; stroke: #e7d8b1; stroke-width: 2; } .holes circle { fill: #d6c49a; }
-      .night .board { fill: #2b3a3a; stroke: #3f5656; } .night .holes circle { fill: #4f6a6a; }
-      .gear path { fill: #5eead4; } .gear .hub { fill: #fdf6e3; } .night .gear path { fill: #2dd4bf; } .night .gear .hub { fill: #2b3a3a; }
-      .wrench path { fill: #94a3b8; } .night .wrench path { fill: #cbd5e1; } .tone-bad .wrench path { fill: #ef4444; }
-      .filter rect { fill: #fff; stroke: #5eead4; stroke-width: 2; } .filter path { stroke: #99f6e4; stroke-width: 2; }
-      .tone-warn .filter rect, .tone-bad .filter rect { stroke: #f59e0b; } .tone-warn .filter path, .tone-bad .filter path { stroke: #fcd34d; }
-      .night .filter rect { fill: #e6ebf3; }
       .gear { transform-box: fill-box; transform-origin: 50% 50%; animation: mtp-spin 12s linear infinite; }
       .wrench { transform-box: fill-box; transform-origin: 80% 15%; } .wrench.busy { animation: mtp-turn 1.5s ease-in-out infinite; }
       @keyframes mtp-spin { to { transform: rotate(360deg); } }
