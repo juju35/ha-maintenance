@@ -6,4 +6,4 @@
  * resources by the integration.
  * https://github.com/juju35/ha-maintenance
  */
-export var MAINTENANCE_CARD_VERSION = '0.5.4';
+export var MAINTENANCE_CARD_VERSION = '0.5.5';

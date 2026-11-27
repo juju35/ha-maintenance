@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.5 - 2026-11-27
+
+### Fixes
+- Tiles have the 10 px corner radius shared by the ha-* cards.
+- Illustrated header (card and panel): the ground bar is 10 px thick and the warning colour is the theme's `--warning-color` (fallback `#ffa600`), like on the other ha-* cards.
+
 ## 0.5.4 - 2026-11-24
 
 ### Fixes

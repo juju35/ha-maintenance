@@ -421,15 +421,15 @@ export class MaintenancePanel extends HTMLElement {
 
   static styles() {
     return `
-      :host { display: block; --ok: var(--success-color, #43a047); --warn: var(--warning-color, #f59e0b); --bad: var(--error-color, #db4437);
+      :host { display: block; --ok: var(--success-color, #43a047); --warn: var(--warning-color, #ffa600); --bad: var(--error-color, #db4437);
               --idle: var(--secondary-text-color, #727272); --accent: #0d9488; }
       .page { min-height: 100vh; background: var(--primary-background-color); color: var(--primary-text-color); }
       .page.tone-ok { --c: var(--accent); } .page.tone-warn { --c: var(--warn); } .page.tone-bad { --c: var(--bad); }
       .top { position: relative; height: 90px; overflow: hidden; background: linear-gradient(#ccfbf1, #f0fdfa); }
       .night .top { background: linear-gradient(#0c2626, #153838); }
-      .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: #5eead4; } .night .ground { background: #2c6b66; }
+      .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: #5eead4; } .night .ground { background: #2c6b66; }
       /* The illustration at the right, just left of the round button, as on the other ha-* panels. */
-      .scene { position: absolute; right: 76px; bottom: 6px; height: 84px; width: auto; max-width: 40%; }
+      .scene { position: absolute; right: 76px; bottom: 10px; height: 84px; width: auto; max-width: 40%; }
       @media (max-width: 700px) { .scene { opacity: .35; } }
       .board { fill: #fdf6e3; stroke: #e7d8b1; stroke-width: 2; } .holes circle { fill: #d6c49a; }
       .night .board { fill: #2b3a3a; stroke: #3f5656; } .night .holes circle { fill: #4f6a6a; }
@@ -443,7 +443,7 @@ export class MaintenancePanel extends HTMLElement {
       @keyframes mtp-spin { to { transform: rotate(360deg); } }
       @keyframes mtp-turn { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-24deg); } }
       @media (prefers-reduced-motion: reduce) { .gear, .wrench.busy { animation: none; } }
-      .bar { position: absolute; left: 24px; right: 24px; top: 0; bottom: 6px; display: flex; align-items: center; gap: 12px; }
+      .bar { position: absolute; left: 24px; right: 24px; top: 0; bottom: 10px; display: flex; align-items: center; gap: 12px; }
       .menu { color: #1f2937; } .night .menu { color: #f3f4f6; }
       .ico { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--c); --mdc-icon-size: 22px;
              background: color-mix(in srgb, var(--c) 18%, #fff); }
@@ -469,7 +469,7 @@ export class MaintenancePanel extends HTMLElement {
       h2 { margin: 6px 0 0; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--secondary-text-color); }
       .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; } .tiles.t3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       @media (max-width: 700px) { .tiles, .tiles.t3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-      .tile, .card { background: var(--card-background-color, #fff); border-radius: 14px; box-shadow: var(--ha-card-box-shadow, 0 1px 3px rgba(0,0,0,.08)); }
+      .tile, .card { background: var(--card-background-color, #fff); border-radius: 10px; box-shadow: var(--ha-card-box-shadow, 0 1px 3px rgba(0,0,0,.08)); }
       .tile { padding: 14px; display: flex; flex-direction: column; gap: 4px; }
       .tile .n { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; } .tile .k { font-size: 13px; color: var(--secondary-text-color); }
       .tile.t-bad .n { color: var(--bad); } .tile.t-warn .n { color: color-mix(in srgb, var(--warn) 80%, var(--primary-text-color)); }
