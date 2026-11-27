@@ -6,4 +6,4 @@
  * illustrated header across the whole width, the tabs under it, the current tab in the address.
  * https://github.com/juju35/ha-maintenance
  */
-export var MAINTENANCE_PANEL_VERSION = '0.5.4';
+export var MAINTENANCE_PANEL_VERSION = '0.5.5';

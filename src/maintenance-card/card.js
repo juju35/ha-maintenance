@@ -206,16 +206,16 @@ export class MaintenanceCard extends HTMLElement {
 
   static styles() {
     return `
-      :host { --mt-ok: var(--success-color, #43a047); --mt-warn: var(--warning-color, #f59e0b); --mt-bad: var(--error-color, #db4437);
+      :host { --mt-ok: var(--success-color, #43a047); --mt-warn: var(--warning-color, #ffa600); --mt-bad: var(--error-color, #db4437);
               --mt-idle: var(--secondary-text-color, #727272); --mt-accent: #0d9488; }
       ha-card { overflow: hidden; container-type: inline-size; }
       ha-card.tone-ok { --c: var(--mt-accent); } ha-card.tone-warn { --c: var(--mt-warn); } ha-card.tone-bad { --c: var(--mt-bad); }
       ha-card.tone-idle { --c: var(--mt-idle); }
       .banner { position: relative; height: 90px; overflow: hidden; background: linear-gradient(#ccfbf1, #f0fdfa); }
       .night .banner { background: linear-gradient(#0c2626, #153838); }
-      .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: #5eead4; }
+      .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: #5eead4; }
       .night .ground { background: #2c6b66; }
-      .scene { position: absolute; right: 14px; bottom: 6px; height: 44px; width: auto; max-width: 40%; }
+      .scene { position: absolute; right: 14px; bottom: 10px; height: 44px; width: auto; max-width: 40%; }
       .board { fill: #fdf6e3; stroke: #e7d8b1; stroke-width: 2; } .holes circle { fill: #d6c49a; }
       .night .board { fill: #2b3a3a; stroke: #3f5656; } .night .holes circle { fill: #4f6a6a; }
       .gear path { fill: #5eead4; } .gear .hub { fill: #fdf6e3; } .night .gear path { fill: #2dd4bf; } .night .gear .hub { fill: #2b3a3a; }
