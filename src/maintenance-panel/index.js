@@ -5,4 +5,5 @@ import "./i18n/mt-panel-i18n.js";
 import "./core.js";
 import "./fold-css.js";
 import "./fold.js";
+import "../maintenance-card/scene.js";
 import "./panel.js";
